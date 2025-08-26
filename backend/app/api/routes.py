@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from .strategies import router as strategies_router
 from .backtest import router as backtest_router
 from .data import router as data_router
+from .dca_api import router as dca_router
 
 # 创建主路由
 router = APIRouter()
@@ -10,6 +11,7 @@ router = APIRouter()
 router.include_router(strategies_router, prefix="/strategies", tags=["strategies"])
 router.include_router(backtest_router, prefix="/backtest", tags=["backtest"])
 router.include_router(data_router, prefix="/data", tags=["data"])
+router.include_router(dca_router, prefix="/api/v1", tags=["DCA Strategy"])
 
 @router.get("/")
 async def api_info():
@@ -18,6 +20,7 @@ async def api_info():
         "endpoints": {
             "strategies": "策略管理API",
             "backtest": "回测执行API", 
-            "data": "数据管理API"
+            "data": "数据管理API",
+            "dca": "定投策略专用API"
         }
     }
