@@ -1,0 +1,189 @@
+/* Tailwind CSS v4 指令 */
+@import "tailwindcss";
+
+/* 基础样式重置和优化 */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+               'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  color-scheme: light;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #ffffff;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  
+  /* CSS 变量用于主题切换 */
+  --bg-color: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-container: #ffffff;
+  --text-primary: #262626;
+  --text-secondary: #595959;
+  --text-tertiary: #8c8c8c;
+  --border-color: #d9d9d9;
+}
+
+/* 深色主题 */
+[data-theme='dark'] {
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #141414;
+  
+  --bg-color: #141414;
+  --bg-secondary: #1f1f1f;
+  --bg-container: #262626;
+  --text-primary: #ffffff;
+  --text-secondary: #d9d9d9;
+  --text-tertiary: #8c8c8c;
+  --border-color: #434343;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.ant-layout {
+  min-height: 100vh;
+  background-color: var(--bg-color) !important;
+}
+
+/* 组件层样式 - 基于 Tailwind 的复合组件 */
+@layer components {
+  .strategy-card {
+    @apply cursor-pointer transition-all duration-300 ease-out;
+    @apply hover:transform hover:-translate-y-1 hover:shadow-lg;
+    @apply rounded-lg border border-gray-300 bg-white p-6;
+    @apply dark:border-gray-700 dark:bg-gray-800;
+  }
+  
+  .metrics-card {
+    @apply text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-900;
+  }
+  
+  .metrics-value {
+    @apply text-2xl font-bold text-primary-500 font-number;
+  }
+  
+  .chart-container {
+    @apply w-full h-96 bg-white dark:bg-gray-800 rounded-lg p-4;
+  }
+  
+  /* 风险等级样式 */
+  .risk-low {
+    @apply text-success-500;
+  }
+  
+  .risk-medium {
+    @apply text-warning-500;
+  }
+  
+  .risk-high {
+    @apply text-error-500;
+  }
+  
+  /* 盈亏显示 */
+  .profit-positive {
+    @apply text-profit font-number font-semibold;
+  }
+  
+  .profit-negative {
+    @apply text-loss font-number font-semibold;
+  }
+  
+  .profit-neutral {
+    @apply text-neutral font-number;
+  }
+}
+
+/* 工具层样式 - 自定义实用工具 */
+@layer utilities {
+  /* 数字等宽字体 */
+  .font-number {
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* 主题适应的阴影 */
+  .shadow-theme-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  
+  [data-theme='dark'] .shadow-theme-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24);
+  }
+  
+  .shadow-theme-md {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  [data-theme='dark'] .shadow-theme-md {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  }
+  
+  .shadow-theme-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+  
+  [data-theme='dark'] .shadow-theme-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.36);
+  }
+  
+  /* 滚动条样式 */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f9fafb;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f9fafb;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+  
+  /* 深色模式滚动条 */
+  [data-theme='dark'] .scrollbar-thin {
+    scrollbar-color: #4b5563 #1f2937;
+  }
+  
+  [data-theme='dark'] .scrollbar-thin::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+  
+  [data-theme='dark'] .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+  
+  [data-theme='dark'] .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+}
