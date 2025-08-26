@@ -34,9 +34,9 @@ class ParameterDefinition(BaseModel):
     required: bool = Field(default=True, description="是否为必填参数")
     
     # 选项约束（用于SELECT和MULTI_SELECT类型）
-    options: Optional[List[str]] = Field(
+    options: Optional[List[Dict[str, Any]]] = Field(
         default=None, 
-        description="可选项列表，仅当type为select或multi_select时有效"
+        description="可选项列表，格式：[{'value': 'key', 'label': 'display_name'}]"
     )
     
     # 数值约束（用于NUMBER类型）
@@ -53,6 +53,17 @@ class ParameterDefinition(BaseModel):
     validation_rule: Optional[str] = Field(
         default=None,
         description="自定义验证规则表达式（预留功能）"
+    )
+    
+    # 扩展字段
+    validation_rules: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="验证规则字典，支持复杂验证逻辑"
+    )
+    
+    depends_on: Optional[List[Dict[str, Any]]] = Field(
+        default=None,
+        description="参数依赖关系，格式：[{'parameter': 'param_name', 'values': [...]}]"
     )
 
     class Config:

@@ -63,8 +63,13 @@ cd quantitative-backtesting
 2. **后端启动**
 ```bash
 cd backend
+py -3.12 -m venv venv312
+venv312\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+  cd backend
+  py -3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port     
+   8008
 ```
 
 3. **前端启动**

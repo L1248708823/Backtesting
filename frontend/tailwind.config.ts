@@ -142,11 +142,7 @@ export default {
     },
   },
   
-  // 禁用 preflight 避免与 Ant Design 冲突
-  corePlugins: {
-    preflight: false,
-  },
-  
+ 
   // 深色模式配置
   darkMode: ['class', '[data-theme="dark"]'],
   

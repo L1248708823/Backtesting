@@ -8,6 +8,8 @@ import BacktestExecution from '@/pages/BacktestExecution'
 import ResultDisplay from '@/pages/ResultDisplay'
 import StrategyManagement from '@/pages/StrategyManagement'
 import DataManagement from '@/pages/DataManagement'
+import DCAConfig from '@/pages/DCAConfig'
+import DCAResult from '@/pages/DCAResult'
 
 const { Content } = Layout
 
@@ -35,6 +37,8 @@ function App() {
                 <Route path="/result/:taskId" element={<ResultDisplay />} />
                 <Route path="/strategies" element={<StrategyManagement />} />
                 <Route path="/data" element={<DataManagement />} />
+                <Route path="/dca/config" element={<DCAConfig />} />
+                <Route path="/dca/result/:taskId" element={<DCAResult />} />
               </Routes>
             </Content>
           </Layout>

@@ -64,7 +64,7 @@ class StrategyResponseSchemas:
         用于 GET /strategies 接口的响应。
         包含所有可用策略的基本信息。
         """
-        data: List[StrategyInfo] = Field(..., description="策略信息列表")
+        data: List['StrategyResponseSchemas.StrategyInfo'] = Field(..., description="策略信息列表")
         total: int = Field(..., description="策略总数")
 
         class Config:

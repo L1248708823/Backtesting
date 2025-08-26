@@ -1,13 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(), // Tailwind CSS v4 Vite 插件
+    tailwindcss(),
   ],
+  // css: {
+  //   postcss: {
+  //     plugins: [
+  //       require('tailwindcss'),
+  //       require('autoprefixer'),
+  //     ],
+  //   },
+  // },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

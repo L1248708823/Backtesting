@@ -1,4 +1,7 @@
-/* Tailwind CSS v4 指令 */
+/* Tailwind CSS 基础样式 */
+/* @import 'tailwindcss/base'; */
+/* @import 'tailwindcss/components';
+@import 'tailwindcss/utilities'; */
 @import "tailwindcss";
 
 /* 基础样式重置和优化 */
@@ -79,7 +82,7 @@ body {
   }
   
   .metrics-value {
-    @apply text-2xl font-bold text-primary-500 font-number;
+    @apply text-2xl font-bold text-blue-500 font-mono;
   }
   
   .chart-container {
@@ -88,28 +91,28 @@ body {
   
   /* 风险等级样式 */
   .risk-low {
-    @apply text-success-500;
+    @apply text-green-500;
   }
   
   .risk-medium {
-    @apply text-warning-500;
+    @apply text-amber-500;
   }
   
   .risk-high {
-    @apply text-error-500;
+    @apply text-red-500;
   }
   
   /* 盈亏显示 */
   .profit-positive {
-    @apply text-profit font-number font-semibold;
+    @apply text-green-600 font-mono font-semibold;
   }
   
   .profit-negative {
-    @apply text-loss font-number font-semibold;
+    @apply text-red-600 font-mono font-semibold;
   }
   
   .profit-neutral {
-    @apply text-neutral font-number;
+    @apply text-gray-500 font-mono;
   }
 }
 
@@ -119,6 +122,7 @@ body {
   .font-number {
     font-feature-settings: 'tnum';
     font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
   }
   
   /* 主题适应的阴影 */

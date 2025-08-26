@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Card, Typography, Tag, Button, Spin, message } from 'antd'
+import { Row, Col, Card, Typography, Tag, Button, Spin, message, Alert, Space } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { RocketOutlined, StarOutlined } from '@ant-design/icons'
 import { strategyService, Strategy } from '@/services/backtest'
 import { RISK_LEVELS, MARKETS } from '@/utils/constants'
 
@@ -32,6 +33,10 @@ const StrategySelection: React.FC = () => {
     navigate(`/config/${strategyId}`)
   }
 
+  const handleDCAStrategy = () => {
+    navigate('/dca/config')
+  }
+
   const getRiskColor = (level: string) => {
     return RISK_LEVELS[level as keyof typeof RISK_LEVELS]?.color || '#666'
   }
@@ -51,6 +56,47 @@ const StrategySelection: React.FC = () => {
       <Paragraph type="secondary" className="mb-6">
         选择一个策略开始回测，每个策略都支持灵活的参数配置
       </Paragraph>
+
+      {/* 推荐策略区域 */}
+      <Alert
+        type="info"
+        message="推荐策略"
+        description={
+          <div style={{ marginTop: 8 }}>
+            <Card
+              size="small"
+              style={{ background: '#f6ffed', border: '1px solid #b7eb8f' }}
+            >
+              <Row align="middle" justify="space-between">
+                <Col>
+                  <Space>
+                    <StarOutlined style={{ color: '#52c41a' }} />
+                    <div>
+                      <Title level={5} style={{ margin: 0, color: '#389e0d' }}>
+                        定投策略 (DCA Strategy)
+                      </Title>
+                      <Paragraph style={{ margin: 0, color: '#52c41a' }}>
+                        最适合新手的长期投资策略，风险低、操作简单、效果稳定
+                      </Paragraph>
+                    </div>
+                  </Space>
+                </Col>
+                <Col>
+                  <Button
+                    type="primary"
+                    icon={<RocketOutlined />}
+                    onClick={handleDCAStrategy}
+                    size="large"
+                  >
+                    立即体验
+                  </Button>
+                </Col>
+              </Row>
+            </Card>
+          </div>
+        }
+        style={{ marginBottom: 24 }}
+      />
 
       <Row gutter={[16, 16]}>
         {strategies.map((strategy) => (
