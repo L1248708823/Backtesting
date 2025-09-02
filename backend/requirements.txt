@@ -8,7 +8,7 @@ pandas==2.2.0
 numpy==1.26.4
 
 # 回测框架
-# backtrader==1.9.78.123  # 暂时注释，可能有兼容性问题
+backtrader==1.9.78.123
 
 # 数据源
 akshare>=1.17.0
