@@ -1,13 +1,45 @@
 import api from './api'
 
-export interface Strategy {
+/** 策略元数据信息 */
+export interface StrategyMetadata {
+  /** 策略唯一标识 */
   id: string
+  /** 策略显示名称 */
   name: string
+  /** 策略详细描述 */
   description: string
+  /** 策略分类 */
   category: string
+  /** 策略类型 - dca, rotation, mean_reversion等 */
+  strategy_type: string
+  /** 风险等级 - 低、中、高 */
   risk_level: string
+  /** 支持的市场类型 - a_stock, us_stock等 */
   supported_markets: string[]
-  parameters: Record<string, any>
+  /** 策略作者 */
+  author: string
+  /** 策略版本号 */
+  version: string
+  /** 创建日期 - YYYY-MM-DD格式，可选 */
+  created_date?: string
+  /** 策略标签 - 用于分类和搜索 */
+  tags: string[]
+  /** 策略特性列表 - 突出优势和特点 */
+  features: string[]
+  /** 参数定义列表 - 包含参数类型、默认值、验证规则等 */
+  parameters: any[]
+}
+
+/** 策略完整信息 */
+export interface Strategy {
+  /** 策略元数据 */
+  metadata: StrategyMetadata
+  /** 策略状态 - available, disabled等 */
+  status: string
+  /** 使用次数统计 */
+  usage_count: number
+  /** 最后更新时间 - ISO格式，可选 */
+  last_updated?: string
 }
 
 export interface BacktestConfig {
