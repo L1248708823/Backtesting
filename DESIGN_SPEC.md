@@ -9,8 +9,8 @@
 ### 设计定位
 - **产品类型**: 专业量化工具 + 学习平台
 - **用户群体**: 程序员投资者 + 量化初学者
-- **设计风格**: 简洁现代 + 现代Web应用体验
-- **核心理念**: 专业可靠、易于探索、学习友好
+- **设计风格**: ~~简洁现代 + 现代Web应用体验~~ **忍者黑客终端风格** (2024-09-03更新)
+- **核心理念**: ~~专业可靠、易于探索、学习友好~~ **终端美学、忍者元素、自嘲幽默** (2024-09-03更新)
 
 ### 设计原则
 1. **简洁优先**: 去除冗余元素，突出核心功能
@@ -1058,3 +1058,203 @@ const StrategyCard = ({ strategy, onSelect }) => (
 
 **设计移交文件**: `DESIGN_SPEC.md` (本文档)
 **预计开发周期**: 2-3周 (前端实现 + 后端集成)
+
+---
+
+## 🥷 忍者黑客终端设计规范 (2024-09-03 新增)
+
+> **更新原因**: 用户反馈原设计过于正式，缺乏个性。基于"别人恐惧我贪婪，别人小亏我破产"的产品调性，重新设计为忍者黑客风格。
+
+### 🎯 忍者黑客设计理念
+
+#### 核心价值观
+- **终端美学**: 黑客文化的极简美学，纯粹的命令行界面体验
+- **忍者元素**: 东方神秘主义与现代技术的融合，潜行、修炼、道场概念
+- **自嘲幽默**: 投资圈自黑文化，韭菜、亏损、破产等梗的巧妙运用
+- **真实诚恳**: 不装逼、不虚假宣传，承认投资风险和回测局限性
+
+#### 设计哲学
+1. **反主流**: 拒绝过度包装，用最直白的方式表达产品价值
+2. **极简主义**: 终端界面的纯粹美学，去除一切装饰性元素  
+3. **文化融合**: Ninja + 韭菜 + 道场，东西方黑客文化的完美结合
+4. **情感共鸣**: 与程序员投资者的真实体验和痛点建立连接
+
+### 🎨 忍者黑客视觉系统
+
+#### 色彩规范
+```css
+/* 忍者黑客主题色彩 */
+--bg-primary: #000000;           /* 终端纯黑背景 */
+--text-primary: #22c55e;         /* 终端绿色主文字 */  
+--text-secondary: #4ade80;       /* 终端淡绿色副文字 */
+--text-tertiary: #6b7280;        /* 终端灰色辅助文字 */
+--text-warning: #f59e0b;         /* 警告黄色 */
+--text-danger: #ef4444;          /* 危险红色 */
+--text-accent: #06b6d4;          /* 强调青色 */
+
+/* 忍者主题特色 */
+--ninja-shadow: rgba(34, 197, 94, 0.1);    /* 绿色阴影 */
+--ninja-glow: rgba(34, 197, 94, 0.3);      /* 绿色发光效果 */
+--ninja-border: rgba(34, 197, 94, 0.3);    /* 绿色边框 */
+
+/* 金融数据专用色 */
+--profit-green: #22c55e;         /* 盈利绿（与主色一致）*/
+--loss-red: #ef4444;             /* 亏损红 */
+--neutral-gray: #6b7280;         /* 中性灰 */
+```
+
+#### 字体规范
+```css
+/* 忍者终端字体系统 */
+font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+/* 字体尺寸 */
+--text-terminal-xl: 1.25rem;     /* 20px - 主标题 */
+--text-terminal-lg: 1.125rem;    /* 18px - 副标题 */  
+--text-terminal-md: 1rem;        /* 16px - 正文 */
+--text-terminal-sm: 0.875rem;    /* 14px - 辅助信息 */
+--text-terminal-xs: 0.75rem;     /* 12px - 提示文字 */
+```
+
+### 📝 忍者文案风格指南
+
+#### 文案原则
+1. **中英混搭**: Ninja + 中文，体现国际化黑客范儿
+2. **投资梗运用**: 韭菜、割肉、破产、首负等圈内术语
+3. **自嘲幽默**: 承认失败、自黑痛点，与用户情感共鸣
+4. **真实诚恳**: 避免虚假宣传，实事求是描述风险
+
+#### 标准文案库
+**品牌文案**:
+- 网站标题: `Ninja Backtesting Dojo`
+- 导航标题: `Ninja韭菜道场@v2.0`
+- Slogan: `别人恐惧我贪婪，别人小亏我破产`
+
+**状态描述**:
+- 执行状态: `STRATEGY_STANDBY` | `NINJA_MODE_ACTIVE` | `MISSION_EXECUTING`
+- 危险级别: `九死一生级别` | `韭菜收割进行时` | `破产倒计时`
+- 修炼等级: `下忍(菜鸟)` | `中忍(老韭菜)` | `上忍(大师)`
+
+**功能描述**:
+- 策略执行: `执行潜行任务` | `开始修炼` | `启动割肉程序`
+- 数据展示: `忍者情报网` | `修行记录` | `战斗统计`
+
+### 🎭 动画效果规范
+
+#### 忍者动效库
+```css
+/* 基础忍者动效 */
+.ninja-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.ninja-bounce {
+  animation: bounce 1s infinite;
+}
+
+.ninja-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 特殊忍者效果 */
+.ninja-typewriter {
+  /* 打字机效果 - 使用react-simple-typewriter */
+  border-right: 2px solid #22c55e;
+  animation: blink 1s infinite;
+}
+
+.ninja-glow {
+  box-shadow: 0 0 10px var(--ninja-glow);
+}
+```
+
+#### 动画使用原则
+- **极简原则**: 只使用pulse、bounce等基础动效，避免复杂动画
+- **性能优先**: 控制同时运行的动画数量，避免影响性能
+- **语义化**: 每个动效都有明确的语义意义（alert、loading、success等）
+
+### 🧭 交互设计规范
+
+#### 忍者交互模式
+1. **终端导航**: 保持`ls strategies` | `ps manage` | `cat data`的命令行风格
+2. **Hover效果**: 绿色发光边框 + 轻微放大
+3. **点击反馈**: 瞬间高亮 + 轻微震动效果（如支持）
+4. **状态指示**: 使用emoji + 动画组合表达状态
+
+#### 组件交互规范
+```css
+/* 忍者按钮交互 */
+.ninja-button {
+  @apply border border-green-400/50 text-green-400 bg-transparent;
+  transition: all 0.3s ease;
+}
+
+.ninja-button:hover {
+  @apply bg-green-400/10 border-green-400 shadow-md;
+  box-shadow: 0 0 15px var(--ninja-glow);
+}
+
+/* 忍者卡片交互 */  
+.ninja-card {
+  @apply border border-green-400/30 bg-black;
+  transition: border-color 0.3s ease;
+}
+
+.ninja-card:hover {
+  @apply border-green-400/60 bg-green-400/5;
+}
+```
+
+### 📱 响应式忍者设计
+
+#### 断点策略
+- **Desktop**: 终端全屏体验，信息密度最高
+- **Tablet**: 保持终端风格，适当调整布局密度  
+- **Mobile**: 简化为核心功能，保持绿色主题
+
+#### 移动端适配原则
+- 保持黑绿配色不变
+- 简化动效，保证性能
+- 核心功能优先显示
+- 保持等宽字体的终端感
+
+### 🛠️ 技术实现规范
+
+#### 推荐技术栈
+- **框架**: React + TypeScript  
+- **样式**: Tailwind CSS (便于快速实现终端风格)
+- **动画**: Framer Motion (可选，用于复杂动效)
+- **打字机**: react-simple-typewriter
+- **图标**: 优先使用emoji，其次Heroicons
+
+#### CSS工具类封装
+```css
+/* 忍者终端工具类 */
+.terminal-bg { @apply bg-black text-green-400 font-mono; }
+.terminal-border { @apply border border-green-400/30; }
+.terminal-glow { box-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+.terminal-text { @apply text-green-400 font-mono; }
+.ninja-pulse { @apply animate-pulse; }
+.ninja-bounce { @apply animate-bounce; }
+```
+
+### 🎪 使用场景与扩展
+
+#### 适用场景
+- ✅ **策略选择页**: 忍者情报网风格，展示策略列表
+- ✅ **参数配置页**: 任务配置终端，表单+命令行混合
+- ✅ **执行页面**: 实时终端输出，显示策略执行过程
+- ✅ **结果页面**: 战斗报告风格，数据可视化+忍者元素
+
+#### 扩展指导原则
+1. **保持一致性**: 所有新页面都应遵循忍者黑客设计规范
+2. **文案创新**: 根据具体功能创造新的忍者风格文案
+3. **渐进增强**: 在基础终端风格基础上添加忍者元素
+4. **用户反馈**: 根据用户使用情况调整设计细节
+
+---
+
+**忍者设计规范制定人**: UI/UX设计师  
+**最后更新**: 2024-09-03  
+**适用版本**: v2.0 "忍者韭菜道场"版本  
+**下次审查**: 根据用户反馈进行调整

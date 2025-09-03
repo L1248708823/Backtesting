@@ -1,189 +1,294 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Card, Typography, Tag, Button, Spin, message, Alert, Space } from 'antd'
+import { Typewriter } from 'react-simple-typewriter'
 import { useNavigate } from 'react-router-dom'
-import { RocketOutlined, StarOutlined } from '@ant-design/icons'
 import { strategyService, Strategy } from '@/services/backtest'
-import { RISK_LEVELS, MARKETS } from '@/utils/constants'
-
-const { Title, Paragraph } = Typography
 
 const StrategySelection: React.FC = () => {
+  /** 策略列表数据 - 从后端API获取的可用策略数组 */
   const [strategies, setStrategies] = useState<Strategy[]>([])
+  /** 加载状态 - 控制策略列表的加载显示 */
   const [loading, setLoading] = useState(true)
+  /** TODO: 后期接入实时上证指数API数据 */
+  const [shanghaiIndex, setShanghaiIndex] = useState(3247)
+  /** TODO: 后期接入实时纳指数据 */
+  const [nasdaqIndex, setNasdaqIndex] = useState(15420)
   const navigate = useNavigate()
 
+
+  // 加载策略
   useEffect(() => {
     loadStrategies()
   }, [])
 
+  // 忍者指数滚动动效
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // 模拟指数小幅波动
+      setShanghaiIndex(prev => prev + (Math.random() - 0.5) * 2)
+      setNasdaqIndex(prev => prev + (Math.random() - 0.5) * 5)
+    }, 3000)
+    
+    return () => clearInterval(timer)
+  }, [])
+
+  /** 
+   * 加载策略列表数据
+   * 从后端API获取可用策略并更新state
+   */
   const loadStrategies = async () => {
     try {
       setLoading(true)
       const data = await strategyService.getStrategies()
       setStrategies(data)
     } catch (error) {
-      message.error('加载策略列表失败')
-      console.error(error)
+      console.error('加载策略失败:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSelectStrategy = (strategyId: string) => {
-    navigate(`/config/${strategyId}`)
-  }
-
+  /** 
+   * 跳转到DCA定投策略配置页面
+   */
   const handleDCAStrategy = () => {
     navigate('/dca/config')
   }
 
-  const getRiskColor = (level: string) => {
-    return RISK_LEVELS[level as keyof typeof RISK_LEVELS]?.color || '#666'
-  }
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <Spin size="large" />
-        <div className="mt-4 text-gray-600">加载策略中...</div>
-      </div>
-    )
+  /** 
+   * 处理策略选择 - 跳转到对应策略的参数配置页
+   * @param strategyId 策略ID
+   */
+  const handleSelectStrategy = (strategyId: string) => {
+    navigate(`/config/${strategyId}`)
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
-      {/* Hero区域 - 现代简约风格 */}
-      <div className="relative overflow-hidden">
-        {/* 背景装饰 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/20 via-gray-950 to-purple-950/20"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMxZTQwYWYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMiI+PC9jaXJjbGU+PC9nPjwvZz48L3N2Zz4=')] opacity-40"></div>
-        
-        <div className="relative container mx-auto px-6 py-24">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-950/30 border border-blue-500/20 rounded-full px-4 py-2 mb-8">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-blue-200 text-sm font-medium">量化回测系统 v2.0</span>
+    <div className="min-h-screen bg-black text-green-400 font-mono overflow-hidden">
+      
+
+      <div className="relative z-10 p-8">
+        {/* 终端头部 */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
-            
-            <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                量化回测
-              </span>
-              <br />
-              <span className="text-gray-300">实验室</span>
-            </h1>
-            
-            <p className="text-xl text-gray-400 mb-12 leading-relaxed">
-              用数据驱动投资决策，用代码创造财富。<br />
-              专业的策略回测平台，为量化交易者而生。
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-4">
-              <button 
-                onClick={handleDCAStrategy}
-                className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-              >
-                <span className="flex items-center gap-2">
-                  <RocketOutlined />
-                  开始回测
-                </span>
-              </button>
-              
-              <button className="group bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white border border-gray-700/50 hover:border-gray-600 px-8 py-4 rounded-xl font-semibold transition-all duration-300">
-                <span className="flex items-center gap-2">
-                  📊 查看策略
-                </span>
-              </button>
-            </div>
+            <span className="text-gray-500">量化回测终端 v2.0.0</span>
           </div>
-        </div>
-      </div>
-
-      {/* 策略选择区域 */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">选择投资策略</h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            每个策略都经过严格回测验证，支持灵活的参数配置和风险控制
-          </p>
-        </div>
-
-        {/* 推荐策略卡片 */}
-        <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/20 rounded-2xl p-8 mb-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
           
-          <div className="relative flex items-center justify-between flex-wrap gap-6">
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-2xl">
-                ⭐
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-2xl font-bold text-white">定投策略 (DCA)</h3>
-                  <span className="bg-green-500/20 text-green-400 text-xs font-medium px-3 py-1 rounded-full">推荐</span>
-                </div>
-                <p className="text-gray-300 text-lg">
-                  最适合新手的长期投资策略，通过定期定额投资平滑市场波动
-                </p>
-              </div>
+          <div className="border-l-4 border-green-400 pl-4 py-2 bg-green-400/5">
+            <div className="text-gray-400 text-sm mb-1">user@quant-terminal:~$</div>
+            <div className="text-xl">
+              <Typewriter
+                words={['别人恐惧我贪婪，别人小亏我破产~']}
+                loop={0}
+                cursor
+                cursorStyle='|'
+                typeSpeed={150}
+                deleteSpeed={80}
+                delaySpeed={3000}
+                deleteDelay={2000}
+              />
             </div>
-            <button 
-              onClick={handleDCAStrategy}
-              className="bg-green-500 hover:bg-green-400 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg shadow-green-500/25"
-            >
-              立即体验
-            </button>
           </div>
         </div>
 
-        {/* 策略网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {strategies.map((strategy) => (
-            <div key={strategy.metadata.id} className="group bg-gray-900/50 hover:bg-gray-800/50 border border-gray-800 hover:border-gray-700 rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-                  {strategy.metadata.name}
-                </h3>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  strategy.metadata.risk_level === '低' 
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                    : strategy.metadata.risk_level === '中'
-                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                    : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                }`}>
-                  {strategy.metadata.risk_level}风险
-                </span>
-              </div>
-              
-              <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                {strategy.metadata.description}
-              </p>
-              
-              <div className="mb-6">
-                <p className="text-gray-300 text-sm font-medium mb-3">支持市场</p>
-                <div className="flex flex-wrap gap-2">
-                  {strategy.metadata.supported_markets.map(market => (
-                    <span key={market} className="bg-gray-800 text-gray-300 px-3 py-1 rounded-lg text-xs">
-                      {MARKETS[market as keyof typeof MARKETS]?.icon} {market}
-                    </span>
-                  ))}
+        {/* 主要内容区域 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* 左侧 - 系统信息 */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="border border-green-400/30 p-4">
+              <div className="text-green-400 mb-3">[NINJA_INTEL] 忍者情报网 🕵️</div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">⚡ 执行状态:</span>
+                  <span className="text-green-400 animate-pulse">STRATEGY_STANDBY</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">
+                    <span className="animate-pulse">🗡️</span> 大A情报:
+                  </span>
+                  <span className="text-yellow-400 font-mono">
+                    {/* TODO: 后期计算真实涨跌幅 */}
+                    上证 {Math.round(shanghaiIndex)} ↓-1.2%
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">
+                    <span className="animate-bounce">💨</span> 美股动向:
+                  </span>
+                  <span className="text-cyan-400 font-mono">
+                    {/* TODO: 后期计算真实涨跌幅 */}
+                    纳指 {Math.round(nasdaqIndex)} ↑+0.8%
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">
+                    <span className="animate-pulse" style={{animationDelay: '0.5s'}}>🔥</span> 热门目标:
+                  </span>
+                  {/* TODO: 后期接入热门标的分析数据 */}
+                  <span className="text-white text-xs">ETF300 | 科技股冷却中</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">
+                    <span className="animate-bounce" style={{animationDelay: '1s'}}>💀</span> 危险指数:
+                  </span>
+                  {/* TODO: 后期接入VIX恐慌指数或波动率数据 */}
+                  <span className="text-red-400 animate-pulse">九死一生级别</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">
+                    <span className="animate-pulse" style={{animationDelay: '1.5s'}}>⏰</span> 下次出击:
+                  </span>
+                  <span className="text-yellow-400 text-xs">收盘前狙击</span>
                 </div>
               </div>
-              
-              <div className="mb-6">
-                <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg text-xs font-medium">
-                  {strategy.metadata.category}
-                </span>
-              </div>
-              
-              <button 
-                onClick={() => handleSelectStrategy(strategy.metadata.id)}
-                className="w-full bg-gray-800 hover:bg-blue-600 text-gray-300 hover:text-white py-3 rounded-xl font-medium transition-all duration-300 border border-gray-700 hover:border-blue-500"
-              >
-                选择策略
-              </button>
             </div>
-          ))}
+
+            <div className="border border-green-400/30 p-4">
+              <div className="text-green-400 mb-3">[TRAINING_LOG] 修行记录 📜</div>
+              <div className="space-y-3 text-sm">
+                <div className="p-2 bg-gray-900/50 border-l-2 border-red-400">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-white text-xs">💀 上次任务: DCA策略潜行</span>
+                    <span className="text-red-400 text-xs">失败 -23.5%</span>
+                  </div>
+                  <div className="text-gray-500 text-xs">2024-03-01 • 修行1年</div>
+                </div>
+                
+                <div className="p-2 bg-gray-900/50 border-l-2 border-green-400">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-white text-xs">⚡ 小试牛刀: 轮动策略</span>
+                    <span className="text-green-400 text-xs">小胜 +12.3%</span>
+                  </div>
+                  <div className="text-gray-500 text-xs">2024-02-15 • 6月试炼</div>
+                </div>
+
+                <div className="pt-2 border-t border-gray-700 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">🥷 当前等级:</span>
+                    <span className="text-yellow-400">下忍 (菜鸟)</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">📈 修行进度:</span>
+                    <span className="text-red-400">还在割肉中...</span>
+                  </div>
+                </div>
+
+                {/* 快速操作按钮 */}
+                <div className="pt-3 space-y-2">
+                  <button
+                    onClick={handleDCAStrategy}
+                    className="w-full text-left p-2 border border-green-400/50 hover:bg-green-400/10 transition-colors group"
+                  >
+                    <div className="text-green-400 group-hover:text-green-300 text-xs">
+                      &gt; 🥷 执行潜行任务 (DCA)
+                    </div>
+                  </button>
+                  
+                  <button className="w-full text-left p-2 border border-yellow-400/50 hover:bg-yellow-400/10 transition-colors group">
+                    <div className="text-yellow-400 group-hover:text-yellow-300 text-xs">
+                      &gt; 📜 查看修行历史
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 中间和右侧 - 策略列表 */}
+          <div className="lg:col-span-2">
+            <div className="border border-green-400/30 p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-green-400">[可用策略]</div>
+                <div className="text-gray-500 text-sm">
+                  {loading ? '加载中...' : `${strategies.length} 个策略`}
+                </div>
+              </div>
+
+              {/* 推荐策略 */}
+              <div className="mb-6 p-4 border border-yellow-400/50 bg-yellow-400/5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-yellow-400 font-bold mb-1">
+                      [推荐] DCA 定投策略
+                    </div>
+                    <div className="text-gray-400 text-sm mb-2">
+                      傻瓜式操作，适合懒人和新韭菜
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      风险等级: 低 | 预期收益: 跑赢通胀 | 破产概率: 5%
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleDCAStrategy}
+                    className="px-6 py-2 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors"
+                  >
+                    执行
+                  </button>
+                </div>
+              </div>
+
+              {/* 策略列表 */}
+              <div className="space-y-3">
+                {loading ? (
+                  <div className="text-center py-8 text-gray-500">
+                    正在扫描策略库...
+                  </div>
+                ) : (
+                  strategies.map((strategy, index) => (
+                    <div
+                      key={strategy.metadata.id}
+                      className="p-3 border border-green-400/30 hover:border-green-400/60 hover:bg-green-400/5 transition-colors cursor-pointer group"
+                      onClick={() => handleSelectStrategy(strategy.metadata.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-green-400">
+                              [{String(index + 1).padStart(2, '0')}]
+                            </span>
+                            <span className="text-white group-hover:text-green-300">
+                              {strategy.metadata.name}
+                            </span>
+                            <span className={`text-xs px-2 py-1 border ${
+                              strategy.metadata.risk_level === '低' 
+                                ? 'border-green-400/50 text-green-400'
+                                : strategy.metadata.risk_level === '中'
+                                ? 'border-yellow-400/50 text-yellow-400'
+                                : 'border-red-400/50 text-red-400'
+                            }`}>
+                              {strategy.metadata.risk_level}风险
+                            </span>
+                          </div>
+                          <div className="text-gray-400 text-sm">
+                            {strategy.metadata.description}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            支持市场: {strategy.metadata.supported_markets.join(', ')}
+                          </div>
+                        </div>
+                        <div className="text-green-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                          &gt;
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 底部终端提示 */}
+        <div className="mt-12 text-center text-gray-600 text-sm">
+          <div>提示: 投资有风险，入市需谨慎。本系统仅供娱乐，不构成投资建议。</div>
+          <div className="mt-2">
+            按 <kbd className="px-2 py-1 bg-gray-800 border border-gray-600 rounded text-xs">Ctrl+C</kbd> 退出系统
+          </div>
         </div>
       </div>
     </div>

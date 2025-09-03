@@ -13,17 +13,17 @@ function ModernNavbar() {
   const location = useLocation()
   
   const navItems = [
-    { path: '/', label: '策略', icon: '🚀' },
-    { path: '/strategies', label: '管理', icon: '📊' },
-    { path: '/data', label: '数据', icon: '💾' }
+    { path: '/', label: 'strategies', icon: '$', cmd: 'ls' },
+    { path: '/strategies', label: 'manage', icon: '#', cmd: 'ps' },
+    { path: '/data', label: 'data', icon: '*;', cmd: 'cat' }
   ]
 
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-900/80 backdrop-blur-lg border border-gray-700/50 rounded-2xl px-6 py-3">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/90 backdrop-blur-lg border-2 border-green-500/30 rounded-md px-6 py-3 shadow-lg shadow-green-500/20">
       <div className="flex items-center gap-8">
-        <div className="flex items-center gap-2 text-blue-400 font-semibold">
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-          量化回测 v2.0
+        <div className="flex items-center gap-2 text-green-400 font-mono font-bold">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span className="tracking-wider">Ninja韭菜道场@v2.0</span>
         </div>
         
         <div className="flex items-center gap-1">
@@ -31,14 +31,14 @@ function ModernNavbar() {
             <a
               key={item.path}
               href={item.path}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-md font-mono transition-all duration-300 ${
                 location.pathname === item.path 
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
+                  : 'text-gray-400 hover:text-green-300 hover:bg-gray-800/50 border border-transparent hover:border-green-500/20'
               }`}
             >
-              <span>{item.icon}</span>
-              <span className="font-medium">{item.label}</span>
+              <span className="font-bold">{item.icon}</span>
+              <span className="font-medium tracking-wide">{item.cmd} {item.label}</span>
             </a>
           ))}
         </div>
