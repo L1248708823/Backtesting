@@ -12,6 +12,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# 导入API路由
+from .api.strategies import router as strategies_router
+from .api.backtest import router as backtest_router
+
+# 导入策略模块
+from .strategies import DCAStrategy
+from .core.strategy_registry import registry
+
+# 手动注册策略（避免循环导入）
+registry.register_strategy(DCAStrategy)
+
 app = FastAPI(
     title="量化回测系统",
     description="基于Backtrader的个人量化回测平台",
@@ -26,6 +37,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 注册路由
+app.include_router(strategies_router)
+app.include_router(backtest_router)
 
 
 @app.get("/")
