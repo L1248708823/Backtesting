@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Typewriter } from 'react-simple-typewriter'
 import { useNavigate } from 'react-router-dom'
 import { strategyService, Strategy } from '@/services/backtest'
+import TerminalHeader from '@/components/TerminalHeader'
 
 const StrategySelection: React.FC = () => {
   /** 策略列表数据 - 从后端API获取的可用策略数组 */
@@ -64,23 +65,34 @@ const StrategySelection: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono overflow-hidden">
-      
-
-      <div className="relative z-10 p-8">
-        {/* 终端头部 */}
+      {/* 页面容器 - 计算实际可用高度 */}
+      <div className="h-screen relative z-10 pt-24 pb-8 px-8 overflow-y-auto">
+        {/* 终端头部 - 自定义版本包含Typewriter效果 */}
         <div className="mb-12">
+          {/* 终端窗口头部 - 复用样式 */}
           <div className="flex items-center gap-4 mb-4">
+            {/* macOS风格窗口控制按钮 */}
             <div className="flex gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-red-500 rounded-full" title="关闭"></div>
+              <div className="w-3 h-3 bg-yellow-500 rounded-full" title="最小化"></div>
+              <div className="w-3 h-3 bg-green-500 rounded-full" title="全屏"></div>
             </div>
-            <span className="text-gray-500">量化回测终端 v2.0.0</span>
+            
+            {/* 终端标题和版本 */}
+            <span className="text-gray-500 font-mono">
+              量化回测终端 v2.0.0
+            </span>
           </div>
           
-          <div className="border-l-4 border-green-400 pl-4 py-2 bg-green-400/5">
-            <div className="text-gray-400 text-sm mb-1">user@quant-terminal:~$</div>
-            <div className="text-xl">
+          {/* 命令行提示符区域 - 带Typewriter效果 */}
+          <div className="border-l-4 border-green-400 pl-4 py-2 bg-green-400/5 mb-6">
+            {/* 命令行提示符 */}
+            <div className="text-gray-400 text-sm mb-1 font-mono">
+              ninja@quant-terminal:~$
+            </div>
+            
+            {/* Typewriter效果任务描述 */}
+            <div className="text-xl font-mono text-green-400">
               <Typewriter
                 words={['别人恐惧我贪婪，别人小亏我破产~']}
                 loop={0}

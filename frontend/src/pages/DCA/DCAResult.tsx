@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Button } from 'antd'
+import TerminalHeader from '@/components/TerminalHeader'
 
 interface BacktestResult {
   strategy_id: string
@@ -25,23 +26,15 @@ const DCAResult: React.FC = () => {
   const state = location.state as LocationState | null
   const result = state?.backtestResult
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono p-8">
-      {/* 终端头部 */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          <span className="text-gray-500">DCA回测结果分析终端 v1.0</span>
-        </div>
-        
-        <div className="border-l-4 border-green-400 pl-4 py-2 bg-green-400/5 mb-6">
-          <div className="text-gray-400 text-sm mb-1">ninja@dca-result:~$</div>
-          <div className="text-xl">任务完成 - 定投回测分析报告</div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* 页面容器 - 计算实际可用高度 */}
+      <div className="h-screen pt-24 pb-8 px-8 overflow-y-auto">
+      {/* 终端头部 - 使用通用组件 */}
+      <TerminalHeader
+        title="DCA回测结果分析终端"
+        hostname="dca-result"
+        taskDescription="任务完成 - 定投回测分析报告"
+      />
 
       <div className="max-w-4xl mx-auto">
         
@@ -164,6 +157,7 @@ const DCAResult: React.FC = () => {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   )

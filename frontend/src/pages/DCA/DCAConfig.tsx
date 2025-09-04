@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Input, InputNumber, Select, DatePicker, message } from 'antd'
 import dayjs from 'dayjs'
 import { backtestService } from '@/services/backtest'
+import TerminalHeader from '@/components/TerminalHeader'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -102,23 +103,15 @@ const DCAConfig: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono p-8">
-      {/* 终端头部 */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          <span className="text-gray-500">DCA定投策略配置终端 v1.0</span>
-        </div>
-        
-        <div className="border-l-4 border-green-400 pl-4 py-2 bg-green-400/5 mb-6">
-          <div className="text-gray-400 text-sm mb-1">ninja@dca-config:~$</div>
-          <div className="text-xl">执行潜行任务 - DCA定投策略配置</div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* 页面容器 - 计算实际可用高度 */}
+      <div className="h-screen pt-24 pb-8 px-8 overflow-y-auto">
+      {/* 终端头部 - 使用通用组件 */}
+      <TerminalHeader
+        title="DCA定投策略配置终端"
+        hostname="dca-config"
+        taskDescription="执行潜行任务 - DCA定投策略配置"
+      />
 
       <div className="max-w-4xl mx-auto space-y-8">
         
@@ -155,12 +148,7 @@ const DCAConfig: React.FC = () => {
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value.toUpperCase())}
                 placeholder="510300 / SPY"
-                className="terminal-input"
-                style={{
-                  backgroundColor: 'black',
-                  borderColor: '#4ade80',
-                  color: '#22c55e'
-                }}
+                className="ninja-input"
               />
               <div className="text-gray-500 text-xs mt-1">
                 A股ETF: 510300, 512100 | 美股ETF: SPY, QQQ
@@ -176,12 +164,7 @@ const DCAConfig: React.FC = () => {
                 max={100000}
                 step={100}
                 placeholder="1000"
-                className="w-full terminal-input"
-                style={{
-                  backgroundColor: 'black',
-                  borderColor: '#4ade80',
-                  color: '#22c55e'
-                }}
+                className="w-full ninja-input"
               />
               <div className="text-gray-500 text-xs mt-1">
                 建议金额: 500-5000元，根据收入设定
@@ -199,8 +182,7 @@ const DCAConfig: React.FC = () => {
             <Select
               value={frequencyDays}
               onChange={setFrequencyDays}
-              className="w-full"
-              dropdownStyle={{ backgroundColor: 'black', border: '1px solid #4ade80' }}
+              className="w-full ninja-input"
             >
               {frequencyOptions.map(option => (
                 <Option key={option.value} value={option.value}>
@@ -229,12 +211,7 @@ const DCAConfig: React.FC = () => {
               <RangePicker
                 value={dateRange}
                 onChange={setDateRange}
-                className="w-full"
-                style={{
-                  backgroundColor: 'black',
-                  borderColor: '#4ade80',
-                  color: '#22c55e'
-                }}
+                className="w-full ninja-input"
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
               />
               <div className="text-gray-500 text-xs mt-1">
@@ -250,12 +227,7 @@ const DCAConfig: React.FC = () => {
                 min={1000}
                 step={1000}
                 placeholder="10000"
-                className="w-full"
-                style={{
-                  backgroundColor: 'black',
-                  borderColor: '#4ade80',
-                  color: '#22c55e'
-                }}
+                className="w-full ninja-input"
               />
               <div className="text-gray-500 text-xs mt-1">
                 回测用资金，建议大于投资金额10倍
@@ -317,6 +289,7 @@ const DCAConfig: React.FC = () => {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   )
