@@ -6,8 +6,7 @@ import BacktestExecution from '@/pages/BacktestExecution'
 import ResultDisplay from '@/pages/ResultDisplay'
 import StrategyManagement from '@/pages/StrategyManagement'
 import DataManagement from '@/pages/DataManagement'
-import DCAConfig from '@/pages/DCAConfig'
-import DCAResult from '@/pages/DCAResult'
+import { DCAConfig, DCAResult } from '@/pages/DCA'
 
 function ModernNavbar() {
   const location = useLocation()

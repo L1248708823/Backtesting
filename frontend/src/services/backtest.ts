@@ -42,14 +42,18 @@ export interface Strategy {
   last_updated?: string
 }
 
-export interface BacktestConfig {
+/** 回测请求配置 - 与后端BacktestRequest模型对应 */
+export interface BacktestRequest {
+  /** 策略ID - 对应后端注册的策略标识 */
   strategy_id: string
+  /** 策略参数 - 具体参数由各策略定义 */
   parameters: Record<string, any>
+  /** 回测开始日期 - YYYY-MM-DD格式 */
   start_date: string
+  /** 回测结束日期 - YYYY-MM-DD格式 */
   end_date: string
-  initial_capital: number
-  commission: number
-  slippage: number
+  /** 初始资金 - 默认10000元 */
+  initial_cash: number
 }
 
 export interface BacktestStatus {
@@ -61,13 +65,26 @@ export interface BacktestStatus {
   completed_at?: string
 }
 
+/** 回测结果 - 与后端BacktestResult模型对应 */
 export interface BacktestResult {
-  task_id: string
+  /** 策略ID */
   strategy_id: string
-  config: BacktestConfig
-  results: Record<string, any>
-  performance_metrics: Record<string, number>
-  created_at: string
+  /** 策略参数 */
+  parameters: Record<string, any>
+  /** 回测开始日期 */
+  start_date: string
+  /** 回测结束日期 */
+  end_date: string
+  /** 初始资金 */
+  initial_cash: number
+  /** 最终资产值 */
+  final_value: number
+  /** 总收益率(%) */
+  total_return: number
+  /** 总交易次数 */
+  total_trades: number
+  /** 性能指标详情 */
+  performance_metrics: Record<string, any>
 }
 
 // 策略相关API
@@ -81,19 +98,33 @@ export const strategyService = {
     api.get(`/strategies/${strategyId}`)
 }
 
-// 回测相关API
+// 回测相关API - 与后端接口完全对应
 export const backtestService = {
-  // 启动回测
-  startBacktest: (config: BacktestConfig): Promise<{ task_id: string; message: string }> => 
-    api.post('/backtest/start', config),
+  /** 执行回测 - 对应后端 /api/v1/backtest/run */
+  runBacktest: (request: BacktestRequest): Promise<BacktestResult> => 
+    api.post('/backtest/run', request),
 
-  // 获取回测状态
-  getBacktestStatus: (taskId: string): Promise<BacktestStatus> => 
-    api.get(`/backtest/status/${taskId}`),
-
-  // 获取回测结果
-  getBacktestResult: (taskId: string): Promise<BacktestResult> => 
-    api.get(`/backtest/result/${taskId}`)
+  /** DCA策略专用回测方法 - 简化DCA策略调用 */
+  runDCABacktest: (params: {
+    symbol: string
+    investment_amount: number
+    frequency_days: number
+    start_date: string
+    end_date: string
+    initial_cash: number
+  }): Promise<BacktestResult> => {
+    return backtestService.runBacktest({
+      strategy_id: 'dca_strategy',
+      parameters: {
+        symbol: params.symbol,
+        investment_amount: params.investment_amount,
+        frequency_days: params.frequency_days
+      },
+      start_date: params.start_date,
+      end_date: params.end_date,
+      initial_cash: params.initial_cash
+    })
+  }
 }
 
 // 数据相关API

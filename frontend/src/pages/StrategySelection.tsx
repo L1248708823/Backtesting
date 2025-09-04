@@ -182,10 +182,10 @@ const StrategySelection: React.FC = () => {
                 <div className="pt-3 space-y-2">
                   <button
                     onClick={handleDCAStrategy}
-                    className="w-full text-left p-2 border border-green-400/50 hover:bg-green-400/10 transition-colors group"
+                    className="w-full text-left p-2 border border-green-400/50 hover:bg-green-400/10 transition-colors group cursor-pointer"
                   >
                     <div className="text-green-400 group-hover:text-green-300 text-xs">
-                      &gt; 🥷 执行潜行任务 (DCA)
+                      &gt; 🥷 执行任务 (DCA)
                     </div>
                   </button>
                   
@@ -225,7 +225,7 @@ const StrategySelection: React.FC = () => {
                   </div>
                   <button
                     onClick={handleDCAStrategy}
-                    className="px-6 py-2 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors"
+                    className="px-6 py-2 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer"
                   >
                     执行
                   </button>

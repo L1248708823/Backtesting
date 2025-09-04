@@ -12,7 +12,7 @@ dependencies:
     specifier: ^5.12.8
     version: 5.26.7(react-dom@18.3.1)(react@18.3.1)
   axios:
-    specifier: ^1.6.2
+    specifier: ^1.11.0
     version: 1.11.0
   dayjs:
     specifier: ^1.11.10
