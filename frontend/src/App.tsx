@@ -7,6 +7,7 @@ import ResultDisplay from '@/pages/ResultDisplay'
 import StrategyManagement from '@/pages/StrategyManagement'
 import DataManagement from '@/pages/DataManagement'
 import { DCAConfig, DCAResult } from '@/pages/DCA'
+import DCATerminalConfig from '@/pages/DCA/DCATerminalConfig'
 
 function ModernNavbar() {
   const location = useLocation()
@@ -59,8 +60,14 @@ function AppContent() {
           <Route path="/result/:taskId" element={<ResultDisplay />} />
           <Route path="/strategies" element={<StrategyManagement />} />
           <Route path="/data" element={<DataManagement />} />
+          
+          {/* 原有DCA路由（保留兼容性） */}
           <Route path="/dca/config" element={<DCAConfig />} />
           <Route path="/dca/result/:taskId" element={<DCAResult />} />
+          <Route path="/dca/result" element={<DCAResult />} />
+          
+          {/* DCA终端化配置页面 - 单页面完成所有流程 */}
+          <Route path="/dca/terminal" element={<DCATerminalConfig />} />
         </Routes>
       </main>
     </div>
