@@ -8,6 +8,7 @@ import PixelButton from '@/components/PixelButton'
 import StockSelectorASCII from '@/components/StockSelectorASCII'
 import QuickDateSelectorASCII from '@/components/QuickDateSelectorASCII'
 import FrequencySelector from '@/components/FrequencySelector'
+import MatrixNinjaAnimation from '@/components/MatrixNinjaAnimation'
 import { backtestService } from '@/services/backtest'
 
 /** DCA任务配置数据接口 */
@@ -295,56 +296,39 @@ const DCATerminalConfig: React.FC = () => {
       case 'execute':
         return (
           <div className="space-y-6">
-            <div className="text-center">
-              <div className="text-yellow-400 font-mono text-lg mb-4">
-                🚀 execute dca-mission
-              </div>
-              <div className="text-green-400 font-mono animate-pulse">
-                ⚡ 正在执行DCA渗透任务...
-              </div>
-            </div>
-
-            {/* 执行进度显示 */}
-            <div className="bg-gray-900/30 p-6 rounded border border-yellow-400/20">
-              <div className="space-y-2 font-mono text-sm">
-                <div className="text-gray-300">&gt; 🎯 目标锁定: {config.symbol}</div>
-                <div className="text-gray-300">&gt; 📊 数据获取中...</div>
-                <div className="text-gray-300">&gt; ⚡ 策略执行中...</div>
-                <div className="text-gray-300">&gt; 💰 收益分析中...</div>
-              </div>
-              
-              {isExecuting && (
-                <div className="mt-4 text-center text-yellow-400 animate-pulse">
-                  请稍候，任务执行中...
-                </div>
-              )}
-              
-              {executionError && (
-                <div className="mt-4 p-3 bg-red-400/10 border border-red-400/30 rounded">
-                  <div className="text-red-400 font-mono text-sm">
-                    ✗ 执行失败: {executionError}
+            {/* 黑客帝国风格加载动画 */}
+            <MatrixNinjaAnimation 
+              isActive={isExecuting}
+              onComplete={() => {}}
+              duration={30000}
+            />
+            
+            {executionError && (
+              <>
+                <div className="p-4 bg-red-400/10 border border-red-400/30 rounded">
+                  <div className="text-red-400 font-mono text-center">
+                    <div className="text-lg mb-2">💀 执行失败</div>
+                    <div className="text-sm">✗ {executionError}</div>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {executionError && (
-              <div className="flex justify-center gap-6">
-                <PixelButton
-                  variant="warning"
-                  size="large"
-                  onClick={handleStartExecution}
-                >
-                  🔄 重试执行
-                </PixelButton>
-                <PixelButton
-                  variant="secondary"
-                  size="large"
-                  onClick={handleModifyConfig}
-                >
-                  ✏️ 修改配置
-                </PixelButton>
-              </div>
+                
+                <div className="flex justify-center gap-6">
+                  <PixelButton
+                    variant="warning"
+                    size="large"
+                    onClick={handleStartExecution}
+                  >
+                    🔄 重试
+                  </PixelButton>
+                  <PixelButton
+                    variant="secondary"
+                    size="large"
+                    onClick={handleModifyConfig}
+                  >
+                    ✏️ 修改
+                  </PixelButton>
+                </div>
+              </>
             )}
           </div>
         )

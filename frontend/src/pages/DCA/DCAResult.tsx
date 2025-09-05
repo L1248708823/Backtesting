@@ -28,7 +28,7 @@ const DCAResult: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono">
       {/* 页面容器 - 计算实际可用高度 */}
-      <div className="h-screen pt-24 pb-8 px-8 overflow-y-auto">
+      <div className="h-screen  pb-8 px-8 overflow-y-auto">
       {/* 终端头部 - 使用通用组件 */}
       <TerminalHeader
         title="DCA回测结果分析终端"

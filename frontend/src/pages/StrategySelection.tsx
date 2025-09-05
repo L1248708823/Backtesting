@@ -66,7 +66,7 @@ const StrategySelection: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono overflow-hidden">
       {/* 页面容器 - 计算实际可用高度 */}
-      <div className="h-screen relative z-10 pt-24 pb-8 px-8 overflow-y-auto">
+      <div className="h-screen relative z-10  pb-8 px-8 overflow-y-auto">
         {/* 终端头部 - 自定义版本包含Typewriter效果 */}
         <div className="mb-12">
           {/* 终端窗口头部 - 复用样式 */}

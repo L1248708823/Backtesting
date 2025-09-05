@@ -56,7 +56,7 @@ const QUICK_OPTIONS: QuickDateOption[] = [
     label: '🎲随机',
     getRange: () => {
       const end = dayjs()
-      const randomMonths = Math.floor(Math.random() * 36) + 6 // 6-42个月
+      const randomMonths = Math.floor(Math.random() * 150) + 6 // 6-86个月
       const start = end.subtract(randomMonths, 'month')
       return [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]
     }

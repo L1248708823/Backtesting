@@ -49,7 +49,7 @@ function ModernNavbar() {
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gray-950 pt-22">
       <ModernNavbar />
       
       <main>

@@ -1,0 +1,201 @@
+/* 忍者道场Loading动画容器 */
+.ninja-loading-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: radial-gradient(ellipse at center, #001a00 0%, #000000 100%);
+  border: 2px solid #00ff00;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== 背景：01数字流 ========== */
+.digital-rain-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rain-column {
+  position: absolute;
+  top: -50px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #00ff00;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: digital-fall linear infinite;
+  text-shadow: 0 0 8px #00ff00;
+  letter-spacing: 1px;
+  writing-mode: vertical-lr;
+  width: 20px;
+  line-height: 16px;
+  transform: translateZ(0); /* GPU加速 */
+}
+
+@keyframes digital-fall {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(500px);
+    opacity: 0;
+  }
+}
+
+/* ========== 前景：加载内容 ========== */
+.loading-foreground {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 32px 48px;
+  border: 1px solid #00ff00;
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 0 20px rgba(0, 255, 0, 0.1),
+    0 0 30px rgba(0, 255, 0, 0.2);
+}
+
+/* ========== 手里剑旋转动画 ========== */
+.shuriken-spinner {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shuriken-icon {
+  width: 28px;
+  height: 28px;
+  color: #222; /* 深黑色 */
+  animation: spin-shuriken 0.7s linear infinite;
+  transform: translateZ(0); /* GPU加速 */
+  filter: drop-shadow(0 0 8px #00ff00); /* 绿色光晕 */
+}
+
+@keyframes spin-shuriken {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== 终端状态文字 ========== */
+.terminal-status {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  color: #00ff00;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00ff00;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+/* ========== 电量格子进度条 ========== */
+.progress-track {
+  width: 280px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(135deg, 
+    #00ff00 25%, 
+    transparent 25%, 
+    transparent 50%, 
+    #00ff00 50%, 
+    #00ff00 75%, 
+    transparent 75%, 
+    transparent
+  );
+  background-size: 12px 12px;
+  border-radius: 2px;
+  box-shadow: 
+    0 0 10px rgba(0, 255, 0, 0.5),
+    inset 0 0 8px rgba(0, 255, 0, 0.2);
+  
+  /* 平滑过渡 */
+  transition: width 0.15s ease-out;
+  
+  /* 动态光效 */
+  background-image: 
+    linear-gradient(135deg, 
+      #00ff00 25%, 
+      transparent 25%, 
+      transparent 50%, 
+      #00ff00 50%, 
+      #00ff00 75%, 
+      transparent 75%, 
+      transparent
+    ),
+    linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+  background-size: 12px 12px, 100% 100%;
+  animation: battery-flow 0.8s linear infinite;
+}
+
+@keyframes battery-flow {
+  0% {
+    background-position: 0px 0px, 0% 0%;
+  }
+  100% {
+    background-position: 12px 12px, 100% 0%;
+  }
+}
+
+/* ========== 性能优化 ========== */
+.ninja-loading-container * {
+  will-change: transform, opacity;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .ninja-loading-container {
+    height: 300px;
+  }
+  
+  .loading-foreground {
+    padding: 24px 32px;
+    gap: 16px;
+  }
+  
+  .progress-track {
+    width: 200px;
+  }
+  
+  .terminal-status {
+    font-size: 14px;
+  }
+}
