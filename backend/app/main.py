@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # 导入API路由
 from .api.strategies import router as strategies_router
 from .api.backtest import router as backtest_router
+from .api.market import router as market_router
 
 # 导入策略模块
 from .strategies import DCAStrategy
@@ -41,6 +42,7 @@ app.add_middleware(
 # 注册路由
 app.include_router(strategies_router)
 app.include_router(backtest_router)
+app.include_router(market_router)
 
 
 @app.get("/")

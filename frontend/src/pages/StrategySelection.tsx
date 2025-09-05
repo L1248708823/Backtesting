@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Typewriter } from 'react-simple-typewriter'
 import { useNavigate } from 'react-router-dom'
-import { strategyService, Strategy } from '@/services/backtest'
+import { strategyService, Strategy, marketService, MarketDashboardData } from '@/services/backtest'
 import TerminalHeader from '@/components/TerminalHeader'
 
 const StrategySelection: React.FC = () => {
@@ -9,10 +9,10 @@ const StrategySelection: React.FC = () => {
   const [strategies, setStrategies] = useState<Strategy[]>([])
   /** 加载状态 - 控制策略列表的加载显示 */
   const [loading, setLoading] = useState(true)
-  /** TODO: 后期接入实时上证指数API数据 */
-  const [shanghaiIndex, setShanghaiIndex] = useState(3247)
-  /** TODO: 后期接入实时纳指数据 */
-  const [nasdaqIndex, setNasdaqIndex] = useState(15420)
+  /** 市场数据 - 从后端API获取的实时市场指数和恐慌指数数据 */
+  const [marketData, setMarketData] = useState<MarketDashboardData | null>(null)
+  /** 市场数据加载状态 */
+  const [marketLoading, setMarketLoading] = useState(true)
   const navigate = useNavigate()
 
 
@@ -21,13 +21,14 @@ const StrategySelection: React.FC = () => {
     loadStrategies()
   }, [])
 
-  // 忍者指数滚动动效
+  // 加载市场数据
   useEffect(() => {
+    loadMarketData()
+    
+    // 每30秒更新一次市场数据
     const timer = setInterval(() => {
-      // 模拟指数小幅波动
-      setShanghaiIndex(prev => prev + (Math.random() - 0.5) * 2)
-      setNasdaqIndex(prev => prev + (Math.random() - 0.5) * 5)
-    }, 3000)
+      loadMarketData()
+    }, 30000)
     
     return () => clearInterval(timer)
   }, [])
@@ -49,6 +50,26 @@ const StrategySelection: React.FC = () => {
   }
 
   /** 
+   * 加载市场仪表盘数据
+   * 从后端API获取实时指数、VIX、热门ETF数据
+   */
+  const loadMarketData = async () => {
+    try {
+      if (marketLoading) {
+        setMarketLoading(true)
+      }
+      const data = await marketService.getDashboard()
+      setMarketData(data)
+    } catch (error) {
+      console.error('加载市场数据失败:', error)
+    } finally {
+      if (marketLoading) {
+        setMarketLoading(false)
+      }
+    }
+  }
+
+  /** 
    * 跳转到DCA定投策略终端化配置页面
    */
   const handleDCAStrategy = () => {
@@ -61,6 +82,29 @@ const StrategySelection: React.FC = () => {
    */
   const handleSelectStrategy = (strategyId: string) => {
     navigate(`/config/${strategyId}`)
+  }
+
+  /** 
+   * 根据涨跌幅生成情感化文案
+   * @param changePct 涨跌幅
+   * @param isUSStock 是否美股
+   */
+  const getEmotionText = (changePct: number | null, isUSStock: boolean = false) => {
+    if (changePct === null) return "数据获取中..."
+    
+    if (changePct > 0) {
+      return isUSStock 
+        ? `📈马踏旧金山 +${changePct.toFixed(1)}%`
+        : `📈奇袭得手 +${changePct.toFixed(1)}%`
+    } else if (changePct < 0) {
+      return isUSStock
+        ? `📉败走华尔街 ${changePct.toFixed(1)}%`
+        : `📉中了埋伏 ${changePct.toFixed(1)}%`
+    } else {
+      return isUSStock
+        ? `➖蛰伏大洋彼岸 ${changePct.toFixed(1)}%`
+        : `➖按兵不动 ${changePct.toFixed(1)}%`
+    }
   }
 
   return (
@@ -123,39 +167,56 @@ const StrategySelection: React.FC = () => {
                   <span className="text-gray-400">
                     <span className="animate-pulse">🗡️</span> 大A情报:
                   </span>
-                  <span className="text-yellow-400 font-mono">
-                    {/* TODO: 后期计算真实涨跌幅 */}
-                    上证 {Math.round(shanghaiIndex)} ↓-1.2%
+                  <span className={`font-mono text-xs ${
+                    marketData?.shanghai_index.change_pct && marketData.shanghai_index.change_pct > 0 
+                      ? 'text-green-400' 
+                      : marketData?.shanghai_index.change_pct && marketData.shanghai_index.change_pct < 0 
+                      ? 'text-red-400' 
+                      : 'text-yellow-400'
+                  }`}>
+                    上证 {marketData?.shanghai_index.value ? Math.round(marketData.shanghai_index.value) : "---"} {getEmotionText(marketData?.shanghai_index.change_pct || null)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">
                     <span className="animate-bounce">💨</span> 美股动向:
                   </span>
-                  <span className="text-cyan-400 font-mono">
-                    {/* TODO: 后期计算真实涨跌幅 */}
-                    纳指 {Math.round(nasdaqIndex)} ↑+0.8%
+                  <span className={`font-mono text-xs ${
+                    marketData?.nasdaq_index.change_pct && marketData.nasdaq_index.change_pct > 0 
+                      ? 'text-green-400' 
+                      : marketData?.nasdaq_index.change_pct && marketData.nasdaq_index.change_pct < 0 
+                      ? 'text-red-400' 
+                      : 'text-cyan-400'
+                  }`}>
+                    纳指 {marketData?.nasdaq_index.value ? Math.round(marketData.nasdaq_index.value) : "---"} {getEmotionText(marketData?.nasdaq_index.change_pct || null, true)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">
                     <span className="animate-pulse" style={{animationDelay: '0.5s'}}>🔥</span> 热门目标:
                   </span>
-                  {/* TODO: 后期接入热门标的分析数据 */}
-                  <span className="text-white text-xs">ETF300 | 科技股冷却中</span>
+                  <span className="text-white text-xs">
+                    {marketData?.hot_etfs?.slice(0, 2).join(' | ') || "数据获取中..."}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">
                     <span className="animate-bounce" style={{animationDelay: '1s'}}>💀</span> 危险指数:
                   </span>
-                  {/* TODO: 后期接入VIX恐慌指数或波动率数据 */}
-                  <span className="text-red-400 animate-pulse">九死一生级别</span>
+                  <span className={`animate-pulse ${
+                    marketData?.vix_level.color === 'red' ? 'text-red-400' :
+                    marketData?.vix_level.color === 'yellow' ? 'text-yellow-400' : 'text-green-400'
+                  }`}>
+                    {marketData?.vix_level.level || "数据获取中..."}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">
-                    <span className="animate-pulse" style={{animationDelay: '1.5s'}}>⏰</span> 下次出击:
+                    <span className="animate-pulse" style={{animationDelay: '1.5s'}}>📊</span> 市场节奏:
                   </span>
-                  <span className="text-yellow-400 text-xs">收盘前狙击</span>
+                  <span className="text-yellow-400 text-xs">
+                    {marketLoading ? "数据获取中..." : "震荡横盘中"}
+                  </span>
                 </div>
               </div>
             </div>

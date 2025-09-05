@@ -141,3 +141,54 @@ export const dataService = {
   checkDataHealth: () => 
     api.get('/data/health')
 }
+
+/** 市场数据接口类型定义 */
+export interface MarketIndexData {
+  /** 指数值 */
+  value: number | null
+  /** 涨跌幅(%) */
+  change_pct: number | null
+  /** 涨跌额 */
+  change_amount?: number | null
+  /** 错误信息 */
+  error?: string
+  /** 时间戳 */
+  timestamp: string
+}
+
+export interface VIXLevelData {
+  /** VIX数值 */
+  value: number | null
+  /** 危险等级文字 */
+  level: string
+  /** 颜色标识 */
+  color: string
+  /** 错误信息 */
+  error?: string
+  /** 时间戳 */
+  timestamp: string
+}
+
+export interface MarketDashboardData {
+  /** 上证指数 */
+  shanghai_index: MarketIndexData
+  /** 纳指 */
+  nasdaq_index: MarketIndexData
+  /** VIX恐慌指数 */
+  vix_level: VIXLevelData
+  /** 热门ETF列表 */
+  hot_etfs: string[]
+  /** 时间戳 */
+  timestamp: string
+}
+
+// 市场数据相关API
+export const marketService = {
+  /** 获取市场仪表盘数据 */
+  getDashboard: (): Promise<MarketDashboardData> => 
+    api.get('/market/dashboard'),
+
+  /** 测试市场数据获取 */
+  testMarketData: () => 
+    api.get('/market/test')
+}
