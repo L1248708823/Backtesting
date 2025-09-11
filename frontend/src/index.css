@@ -354,3 +354,156 @@ body {
 .ant-picker-dropdown .ant-picker-today {
   border-color: #22c55e !important;
 }
+
+/* DCA结果页面忍者主题 */
+.ninja-card {
+  background-color: black !important;
+  border-color: #22c55e !important;
+  color: #22c55e !important;
+}
+
+.ninja-card .ant-card-body {
+  background-color: black !important;
+}
+
+.ninja-card .ant-statistic-title {
+  color: #9ca3af !important;
+}
+
+.ninja-button {
+  background-color: transparent !important;
+  border-color: #22c55e !important;
+  color: #22c55e !important;
+  font-family: monospace !important;
+}
+
+.ninja-button:hover {
+  background-color: #22c55e !important;
+  color: black !important;
+  border-color: #22c55e !important;
+}
+
+.ninja-button-secondary {
+  background-color: transparent !important;
+  border-color: #06b6d4 !important;
+  color: #06b6d4 !important;
+  font-family: monospace !important;
+}
+
+.ninja-button-secondary:hover {
+  background-color: #06b6d4 !important;
+  color: black !important;
+  border-color: #06b6d4 !important;
+}
+
+/* 表格忍者主题 */
+.ninja-table {
+  background-color: black !important;
+  color: #22c55e !important;
+}
+
+.ninja-table .ant-table {
+  background-color: black !important;
+  color: #22c55e !important;
+}
+
+.ninja-table .ant-table-thead > tr > th {
+  background-color: #1f2937 !important;
+  color: #22c55e !important;
+  border-color: #374151 !important;
+}
+
+.ninja-table .ant-table-tbody > tr > td {
+  background-color: black !important;
+  color: #d1d5db !important;
+  border-color: #374151 !important;
+}
+
+.ninja-table .ant-table-tbody > tr:hover > td {
+  background-color: #1f2937 !important;
+}
+
+/* 分页器忍者主题 */
+.ninja-pagination .ant-pagination-item {
+  background-color: #1f2937 !important;
+  border: 2px solid #22c55e !important;
+  color: #22c55e !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  font-family: monospace !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  line-height: 36px !important;
+  text-align: center !important;
+}
+
+.ninja-pagination .ant-pagination-item:hover {
+  background-color: #374151 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+  transform: scale(1.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+.ninja-pagination .ant-pagination-item-active {
+  background-color: #22c55e !important;
+  color: black !important;
+  border-color: #22c55e !important;
+  font-weight: bold !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5) !important;
+}
+
+.ninja-pagination .ant-pagination-item-active:hover {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+  color: black !important;
+}
+
+.ninja-pagination .ant-pagination-prev, 
+.ninja-pagination .ant-pagination-next {
+  background-color: #1f2937 !important;
+  border: 2px solid #22c55e !important;
+  color: #22c55e !important;
+  font-weight: bold !important;
+  font-family: monospace !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  line-height: 36px !important;
+}
+
+.ninja-pagination .ant-pagination-prev:hover, 
+.ninja-pagination .ant-pagination-next:hover {
+  color: black !important;
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
+  transform: scale(1.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+.ninja-pagination .ant-pagination-disabled {
+  background-color: #374151 !important;
+  border-color: #6b7280 !important;
+  color: #6b7280 !important;
+}
+
+.ninja-pagination .ant-pagination-disabled:hover {
+  background-color: #374151 !important;
+  border-color: #6b7280 !important;
+  color: #6b7280 !important;
+  transform: none !important;
+  cursor: not-allowed !important;
+}
+
+/* 分页器跳转输入框样式 */
+.ninja-pagination .ant-pagination-options-quick-jumper input {
+  background-color: black !important;
+  border-color: #22c55e !important;
+  color: #22c55e !important;
+  font-family: monospace !important;
+}
+
+/* 分页器总数显示 */
+.ninja-pagination .ant-pagination-total-text {
+  color: #9ca3af !important;
+  font-family: monospace !important;
+}

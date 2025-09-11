@@ -5,7 +5,7 @@
  */
 
 // 原有DCA页面（保留兼容性）
-export { default as DCAConfig } from './DCAConfig'
+// export { default as DCAConfig } from './DCAConfig'
 export { default as DCAResult } from './DCAResult'
 
 // 新的终端化DCA配置页面

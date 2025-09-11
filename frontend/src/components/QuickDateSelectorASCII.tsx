@@ -55,9 +55,14 @@ const QUICK_OPTIONS: QuickDateOption[] = [
     key: 'random',
     label: '🎲随机',
     getRange: () => {
-      const end = dayjs()
-      const randomMonths = Math.floor(Math.random() * 150) + 6 // 6-86个月
-      const start = end.subtract(randomMonths, 'month')
+      // 1. 先生成结束时间：距今0-3年随机
+      const endOffsetMonths = Math.floor(Math.random() * 37) // 0-36个月前（0-3年）
+      const end = dayjs().subtract(endOffsetMonths, 'month')
+      
+      // 2. 再根据end生成开始时间：1-5年的投资期间（更全面的测试范围）
+      const durationMonths = Math.floor(Math.random() * 48) + 12 // 12-60个月（1-5年）
+      const start = end.subtract(durationMonths, 'month')
+      
       return [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]
     }
   }

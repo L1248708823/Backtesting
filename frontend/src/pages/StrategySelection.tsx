@@ -70,10 +70,10 @@ const StrategySelection: React.FC = () => {
   }
 
   /** 
-   * 跳转到DCA定投策略终端化配置页面
+   * 跳转到DCA定投策略配置页面 (增强版，支持止盈配置)
    */
   const handleDCAStrategy = () => {
-    navigate('/dca/terminal')
+    navigate('/dca/config')
   }
 
   /** 

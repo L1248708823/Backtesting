@@ -29,6 +29,13 @@ class DCAStrategy(BaseStrategy):
         ('investment_amount', 1000),      # 每期投资金额
         ('frequency_days', 30),           # 投资频率（天数）
         ('symbol', '510300'),             # 投资标的
+        
+        # 止盈策略参数
+        ('exit_strategy', 'hold'),        # 止盈策略类型: hold/profit_target/time_limit/batch_exit
+        ('profit_target', 30.0),          # 目标收益率(%)
+        ('time_limit_months', 36),        # 时间止盈期限(月)
+        ('batch_exit_levels', [20.0, 40.0, 60.0]),  # 分批止盈点位(%)
+        ('batch_exit_ratios', [0.3, 0.5, 1.0]),     # 分批止盈比例
     )
     
     def __init__(self):
@@ -38,14 +45,41 @@ class DCAStrategy(BaseStrategy):
         self.last_investment_date = None
         self.investment_count = 0
         
+        # DCA特殊数据记录
+        self.investment_records = []  # 每次定投详细记录
+        self.total_invested = 0       # 累计投入金额
+        self.total_shares = 0         # 累计买入份额
+        
+        # 止盈策略状态
+        self.strategy_start_date = None     # 策略开始时间
+        self.exit_executed = False          # 是否已执行止盈
+        self.batch_exit_tracker = {}        # 分批止盈跟踪 {level: executed}
+        
         self.log(f'DCA策略初始化: 每{self.params.frequency_days}天投资{self.params.investment_amount}元于{self.params.symbol}')
+    
+    def start(self):
+        """策略开始时调用"""
+        super().start()
+        self.strategy_start_date = self.datas[0].datetime.date(0)
+        
+        # 初始化分批止盈跟踪器
+        if self.params.exit_strategy == 'batch_exit':
+            for level in self.params.batch_exit_levels:
+                self.batch_exit_tracker[level] = False
     
     def next(self):
         """策略主逻辑"""
         current_date = self.datas[0].datetime.date(0)
         
-        # 检查是否到了投资日期
-        if self.should_invest(current_date):
+        # 确保每日数据收集（防止prenext/postnext不工作）
+        self._collect_daily_data()
+        
+        # 1. 检查止盈条件（每个交易日都检查）
+        if not self.exit_executed and self.total_shares > 0:
+            self.check_exit_conditions(current_date)
+        
+        # 2. 检查是否到了投资日期 (如果还没止盈)
+        if not self.exit_executed and self.should_invest(current_date):
             self.execute_investment()
     
     def should_invest(self, current_date) -> bool:
@@ -61,6 +95,7 @@ class DCAStrategy(BaseStrategy):
     def execute_investment(self):
         """执行定投"""
         current_price = self.datas[0].close[0]
+        current_date = self.datas[0].datetime.date(0)
         
         # 计算可购买股数（向下取整）
         shares_to_buy = int(self.params.investment_amount / current_price)
@@ -70,13 +105,102 @@ class DCAStrategy(BaseStrategy):
             self.buy(size=shares_to_buy)
             
             # 更新投资记录
-            self.last_investment_date = self.datas[0].datetime.date(0)
+            self.last_investment_date = current_date
             self.investment_count += 1
             
             actual_amount = shares_to_buy * current_price
+            
+            # 记录详细定投信息
+            investment_record = {
+                'date': current_date.isoformat(),
+                'round': self.investment_count,
+                'price': current_price,
+                'shares': shares_to_buy,
+                'amount': actual_amount,
+                'target_amount': self.params.investment_amount,
+                'market_value': self.broker.getvalue()  # 当前总市值
+            }
+            self.investment_records.append(investment_record)
+            
+            # 更新累计统计
+            self.total_invested += actual_amount
+            self.total_shares += shares_to_buy
+            
             self.log(f'第{self.investment_count}次定投: 价格={current_price:.2f}, 股数={shares_to_buy}, 实际金额={actual_amount:.2f}')
         else:
             self.log(f'资金不足定投: 价格={current_price:.2f}, 目标金额={self.params.investment_amount}')
+    
+    def check_exit_conditions(self, current_date):
+        """检查止盈条件"""
+        if self.params.exit_strategy == 'hold':
+            return  # 纯持有策略，不执行止盈
+        
+        # 计算当前收益率
+        current_price = self.datas[0].close[0]
+        current_position_value = self.total_shares * current_price
+        if self.total_invested == 0:
+            return
+        
+        current_return = (current_position_value - self.total_invested) / self.total_invested * 100
+        
+        # 目标收益止盈
+        if self.params.exit_strategy == 'profit_target':
+            if current_return >= self.params.profit_target:
+                self.execute_exit('profit_target', current_return, shares_ratio=1.0)
+        
+        # 时间止盈
+        elif self.params.exit_strategy == 'time_limit':
+            if self.strategy_start_date:
+                months_passed = self._calculate_months_passed(current_date)
+                if months_passed >= self.params.time_limit_months:
+                    self.execute_exit('time_limit', current_return, shares_ratio=1.0)
+        
+        # 分批止盈
+        elif self.params.exit_strategy == 'batch_exit':
+            self.check_batch_exit(current_return)
+    
+    def check_batch_exit(self, current_return):
+        """检查分批止盈条件"""
+        levels = self.params.batch_exit_levels
+        ratios = self.params.batch_exit_ratios
+        
+        for i, level in enumerate(levels):
+            if not self.batch_exit_tracker.get(level, False) and current_return >= level:
+                # 计算本次卖出比例
+                if i == 0:
+                    sell_ratio = ratios[0]
+                else:
+                    sell_ratio = ratios[i] - ratios[i-1]
+                
+                self.execute_exit('batch_exit', current_return, shares_ratio=sell_ratio)
+                self.batch_exit_tracker[level] = True
+                
+                # 如果是最后一个点位，标记完全止盈
+                if i == len(levels) - 1:
+                    self.exit_executed = True
+    
+    def execute_exit(self, exit_type: str, return_rate: float, shares_ratio: float):
+        """执行止盈卖出"""
+        if self.total_shares == 0:
+            return
+        
+        shares_to_sell = int(self.total_shares * shares_ratio)
+        if shares_to_sell > 0:
+            self.sell(size=shares_to_sell)
+            
+            self.log(f'执行{exit_type}止盈: 收益率={return_rate:.2f}%, 卖出股数={shares_to_sell}, 卖出比例={shares_ratio:.1%}')
+            
+            # 如果是完全卖出，标记已执行止盈
+            if shares_ratio >= 1.0:
+                self.exit_executed = True
+    
+    def _calculate_months_passed(self, current_date):
+        """计算已过月数"""
+        if not self.strategy_start_date:
+            return 0
+        
+        delta = current_date - self.strategy_start_date
+        return delta.days / 30.0  # 简单按30天一个月计算
     
     @classmethod
     def get_metadata(cls) -> StrategyMetadata:
@@ -141,6 +265,50 @@ class DCAStrategy(BaseStrategy):
                     ),
                     group="基础配置",
                     order=3
+                ),
+                ParameterDefinition(
+                    name="exit_strategy",
+                    display_name="止盈策略",
+                    description="选择止盈方式：纯持有/目标收益止盈/时间止盈/分批止盈",
+                    parameter_type=ParameterType.SELECT,
+                    default_value="hold",
+                    options=[
+                        ParameterOption(value="hold", label="纯持有", description="长期持有不卖出"),
+                        ParameterOption(value="profit_target", label="目标收益止盈", description="达到目标收益率后全部卖出"),
+                        ParameterOption(value="time_limit", label="时间止盈", description="到期后自动卖出"),
+                        ParameterOption(value="batch_exit", label="分批止盈", description="分批逐步减仓")
+                    ],
+                    validation_rules=ValidationRule(required=True),
+                    group="止盈配置",
+                    order=4
+                ),
+                ParameterDefinition(
+                    name="profit_target",
+                    display_name="目标收益率",
+                    description="目标收益止盈的收益率阈值(%)",
+                    parameter_type=ParameterType.NUMBER,
+                    default_value=30.0,
+                    validation_rules=ValidationRule(
+                        min_value=5.0,
+                        max_value=200.0,
+                        required=False
+                    ),
+                    group="止盈配置",
+                    order=5
+                ),
+                ParameterDefinition(
+                    name="time_limit_months",
+                    display_name="投资期限",
+                    description="时间止盈的投资期限(月)",
+                    parameter_type=ParameterType.NUMBER,
+                    default_value=36,
+                    validation_rules=ValidationRule(
+                        min_value=6,
+                        max_value=120,
+                        required=False
+                    ),
+                    group="止盈配置",
+                    order=6
                 )
             ]
         )
@@ -151,5 +319,85 @@ class DCAStrategy(BaseStrategy):
         return {
             'investment_amount': 1000,
             'frequency_days': 30,
-            'symbol': '510300'
+            'symbol': '510300',
+            'exit_strategy': 'hold',
+            'profit_target': 30.0,
+            'time_limit_months': 36
         }
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """获取DCA策略的完整性能指标"""
+        # 首先获取基础指标
+        base_metrics = super().get_performance_metrics()
+        
+        # 计算DCA特殊指标
+        dca_metrics = self._calculate_dca_metrics()
+        
+        # 合并指标
+        return {
+            **base_metrics,
+            **dca_metrics
+        }
+    
+    def _calculate_dca_metrics(self) -> Dict[str, Any]:
+        """计算DCA策略特殊指标"""
+        if not self.investment_records:
+            return {
+                'average_cost': 0.0,
+                'cost_reduction_effect': 0.0,
+                'investment_efficiency': 0.0
+            }
+        
+        # 计算平均成本
+        if self.total_shares > 0:
+            average_cost = self.total_invested / self.total_shares
+        else:
+            average_cost = 0.0
+        
+        # 计算成本摊薄效果 (对比平均价格买入的效果)
+        prices = [record['price'] for record in self.investment_records]
+        if prices:
+            simple_average_price = sum(prices) / len(prices)  # 简单平均价格
+            cost_reduction_effect = (simple_average_price - average_cost) / simple_average_price * 100
+        else:
+            cost_reduction_effect = 0.0
+        
+        # 投资执行效率 (实际投资与目标投资的比率)
+        target_total = len(self.investment_records) * self.params.investment_amount
+        if target_total > 0:
+            investment_efficiency = (self.total_invested / target_total) * 100
+        else:
+            investment_efficiency = 0.0
+        
+        # 当前持仓价值
+        current_price = self.datas[0].close[0] if self.datas and len(self.datas[0]) > 0 else 0
+        current_position_value = self.total_shares * current_price
+        
+        # 未实现收益
+        unrealized_pnl = current_position_value - self.total_invested
+        unrealized_return = (unrealized_pnl / self.total_invested * 100) if self.total_invested > 0 else 0
+        
+        return {
+            # DCA核心指标
+            'investment_records': self.investment_records,
+            'total_invested': self.total_invested,
+            'total_shares': self.total_shares,
+            'average_cost': average_cost,
+            
+            # DCA效果分析
+            'cost_reduction_effect': cost_reduction_effect,  # 成本摊薄效果(%)
+            'investment_efficiency': investment_efficiency,   # 投资执行效率(%)
+            
+            # 持仓分析
+            'current_position_value': current_position_value,
+            'unrealized_pnl': unrealized_pnl,
+            'unrealized_return': unrealized_return,
+            
+            # 投资时机分析
+            'price_range': {
+                'min_price': min(prices) if prices else 0,
+                'max_price': max(prices) if prices else 0,
+                'price_volatility': (max(prices) - min(prices)) / min(prices) * 100 if prices and min(prices) > 0 else 0
+            }
+        }
+    

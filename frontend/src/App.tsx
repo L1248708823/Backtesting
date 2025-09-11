@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import StrategySelection from '@/pages/StrategySelection'
 import ParameterConfig from '@/pages/ParameterConfig'
@@ -61,13 +61,10 @@ function AppContent() {
           <Route path="/strategies" element={<StrategyManagement />} />
           <Route path="/data" element={<DataManagement />} />
           
-          {/* 原有DCA路由（保留兼容性） */}
-          <Route path="/dca/config" element={<DCAConfig />} />
+          {/* DCA路由 */}
+          <Route path="/dca/config" element={<DCATerminalConfig />} />
           <Route path="/dca/result/:taskId" element={<DCAResult />} />
           <Route path="/dca/result" element={<DCAResult />} />
-          
-          {/* DCA终端化配置页面 - 单页面完成所有流程 */}
-          <Route path="/dca/terminal" element={<DCATerminalConfig />} />
         </Routes>
       </main>
     </div>

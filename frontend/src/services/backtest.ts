@@ -104,7 +104,7 @@ export const backtestService = {
   runBacktest: (request: BacktestRequest): Promise<BacktestResult> => 
     api.post('/backtest/run', request),
 
-  /** DCA策略专用回测方法 - 简化DCA策略调用 */
+  /** DCA策略专用回测方法 - 简化DCA策略调用，支持止盈策略 */
   runDCABacktest: (params: {
     symbol: string
     investment_amount: number
@@ -112,13 +112,23 @@ export const backtestService = {
     start_date: string
     end_date: string
     initial_cash: number
+    exit_strategy?: string
+    profit_target?: number
+    time_limit_months?: number
+    batch_exit_levels?: number[]
+    batch_exit_ratios?: number[]
   }): Promise<BacktestResult> => {
     return backtestService.runBacktest({
       strategy_id: 'dca_strategy',
       parameters: {
         symbol: params.symbol,
         investment_amount: params.investment_amount,
-        frequency_days: params.frequency_days
+        frequency_days: params.frequency_days,
+        exit_strategy: params.exit_strategy || 'hold',
+        profit_target: params.profit_target,
+        time_limit_months: params.time_limit_months,
+        batch_exit_levels: params.batch_exit_levels,
+        batch_exit_ratios: params.batch_exit_ratios
       },
       start_date: params.start_date,
       end_date: params.end_date,
