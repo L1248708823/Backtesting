@@ -128,13 +128,21 @@ class YFinanceDataSource(DataSource):
     
     def _ensure_yfinance(self):
         """延迟导入yfinance"""
+        print(f"进入测试2 ${self._yf}")
         if self._yf is None:
             try:
+                print("准备导入yfinance...")
                 import yfinance as yf
+                print(f"进入测试3 ${yf}")
                 self._yf = yf
-                logger.info("yfinance loaded")
-            except ImportError:
-                raise ImportError("yfinance not installed")
+                logger.info("yfinance loaded successfully")
+                print("yfinance导入成功!")
+            except ImportError as e:
+                print(f"ImportError: {e}")
+                raise ImportError(f"yfinance not installed: {e}")
+            except Exception as e:
+                print(f"导入yfinance异常: {e}")
+                raise ImportError(f"yfinance导入失败: {e}")
         return self._yf
     
     def get_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
@@ -148,9 +156,12 @@ class YFinanceDataSource(DataSource):
         Returns:
             标准OHLCV DataFrame，index为Date
         """
+        print(f"进入游戏")
+
         yf = self._ensure_yfinance()
-        
+        print(f"进入测试1")
         try:
+            logger.info(f"进入测试")
             ticker = yf.Ticker(symbol)
             df = ticker.history(start=start_date, end=end_date)
             
@@ -178,7 +189,6 @@ class DataManager:
     
     def get_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
         """统一获取数据接口
-        
         自动根据symbol选择数据源:
         - 纯数字(510300) -> AKShare  
         - 字母(SPY) -> yfinance

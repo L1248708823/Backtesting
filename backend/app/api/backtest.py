@@ -309,6 +309,7 @@ def get_real_data(symbol: str, start_date: str, end_date: str):
     """
     try:
         # 使用数据管理器获取真实数据
+        print('获取数据')
         df = data_manager.get_data(symbol, start_date, end_date)
         
         if df.empty:
@@ -352,6 +353,7 @@ def get_real_data(symbol: str, start_date: str, end_date: str):
         return data
         
     except ValueError:
+        logger.error(f"获取数据失败: {str(e)}")
         # 重新抛出ValueError，保持错误信息
         raise
     except Exception as e:

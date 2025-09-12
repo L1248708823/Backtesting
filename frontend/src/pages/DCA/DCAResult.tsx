@@ -571,7 +571,14 @@ const DCAResult: React.FC = () => {
               <Row gutter={[24, 16]}>
                 <Col span={12}>
                   <div className="bg-blue-400/10 p-4 rounded border border-blue-400/20">
-                    <div className="text-blue-400 text-sm mb-3 font-bold">📈 DCA纯持有策略</div>
+                    <div className="text-blue-400 text-sm mb-3 font-bold">
+                      📈 DCA纯持有策略
+                      {metrics.benchmark_comparison.investment_duration_months && (
+                        <span className="text-blue-300 text-xs ml-2 font-normal">
+                          ({metrics.benchmark_comparison.investment_duration_months}个月定投)
+                        </span>
+                      )}
+                    </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">平均成本:</span>
@@ -601,7 +608,14 @@ const DCAResult: React.FC = () => {
                 
                 <Col span={12}>
                   <div className="bg-green-400/10 p-4 rounded border border-green-400/20">
-                    <div className="text-green-400 text-sm mb-3 font-bold">🔄 DCA止盈策略</div>
+                    <div className="text-green-400 text-sm mb-3 font-bold">
+                      🔄 DCA止盈策略
+                      {metrics.benchmark_comparison.investment_duration_months && (
+                        <span className="text-green-300 text-xs ml-2 font-normal">
+                          ({metrics.benchmark_comparison.investment_duration_months}个月定投)
+                        </span>
+                      )}
+                    </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">平均成本:</span>

@@ -15,7 +15,7 @@ function ModernNavbar() {
   const navItems = [
     { path: '/', label: 'strategies', icon: '$', cmd: 'ls' },
     { path: '/strategies', label: 'manage', icon: '#', cmd: 'ps' },
-    { path: '/data', label: 'data', icon: '*;', cmd: 'cat' }
+    { path: '/data', label: 'data', icon: '*', cmd: 'cat' }
   ]
 
   return (
