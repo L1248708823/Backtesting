@@ -430,8 +430,8 @@ def merge_backtrader_and_custom_metrics(bt_analyzers: Dict, strategy_metrics: Di
             'buy_orders', 'sell_orders', 'buy_records', 'sell_records',
             'investment_records', 'total_invested', 'total_shares', 'average_cost',
             'cost_reduction_effect', 'investment_efficiency', 'current_position_value',
-            'unrealized_pnl', 'unrealized_return', 'price_range', 'daily_values',
-            'daily_returns', 'daily_dates', 'benchmark_comparison'
+            'unrealized_pnl', 'unrealized_return', 'price_range', 'daily_prices',
+            'daily_portfolio_values', 'daily_returns', 'daily_dates', 'benchmark_comparison'
         ]},
         
         # 波动率计算（如果自定义指标中有）

@@ -67,12 +67,9 @@ class DCAStrategy(BaseStrategy):
             for level in self.params.batch_exit_levels:
                 self.batch_exit_tracker[level] = False
     
-    def next(self):
+    def _next_impl(self):
         """策略主逻辑"""
         current_date = self.datas[0].datetime.date(0)
-        
-        # 确保每日数据收集（防止prenext/postnext不工作）
-        self._collect_daily_data()
         
         # 1. 检查止盈条件（每个交易日都检查）
         if not self.exit_executed and self.total_shares > 0:

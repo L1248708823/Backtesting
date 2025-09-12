@@ -1,8 +1,9 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Button, Table, Card, Statistic, Row, Col, Divider, Tooltip } from 'antd'
+import { Button, Table, Card, Statistic, Row, Col, Tooltip } from 'antd'
 import { ColumnType } from 'antd/es/table'
 import TerminalHeader from '@/components/TerminalHeader'
+import DCACharts from '@/components/DCACharts'
 
 interface BacktestResult {
   /** 策略唯一标识 */
@@ -542,42 +543,14 @@ const DCAResult: React.FC = () => {
                 <span className="text-gray-400 text-sm ml-2">
                   当前策略: {metrics.benchmark_comparison.strategy_description || '未知'}
                 </span>
-                {metrics.benchmark_comparison.total_investment_count && (
-                  <span className="text-gray-500 text-xs ml-2">
-                    | 定投{metrics.benchmark_comparison.total_investment_count}次 
-                    | 持续{metrics.benchmark_comparison.investment_duration_months}个月
-                    | 频率{metrics.benchmark_comparison.investment_frequency_actual}天/次
-                  </span>
-                )}
               </div>
               
-              {/* 止盈执行状态提示 */}
-              {metrics.benchmark_comparison.exit_actually_executed !== undefined && (
-                <div className={`mb-4 p-3 rounded border ${
-                  metrics.benchmark_comparison.exit_actually_executed 
-                    ? 'bg-orange-400/10 border-orange-400/30' 
-                    : 'bg-blue-400/10 border-blue-400/30'
-                }`}>
-                  <div className="text-sm">
-                    {metrics.benchmark_comparison.exit_actually_executed ? (
-                      <span className="text-orange-400">⚠️ 注意：此策略已执行止盈卖出操作</span>
-                    ) : (
-                      <span className="text-blue-400">ℹ️ 提示：此策略在回测期间未触发止盈条件，表现与纯持有相同</span>
-                    )}
-                  </div>
-                </div>
-              )}
               
               <Row gutter={[24, 16]}>
                 <Col span={12}>
                   <div className="bg-blue-400/10 p-4 rounded border border-blue-400/20">
                     <div className="text-blue-400 text-sm mb-3 font-bold">
                       📈 DCA纯持有策略
-                      {metrics.benchmark_comparison.investment_duration_months && (
-                        <span className="text-blue-300 text-xs ml-2 font-normal">
-                          ({metrics.benchmark_comparison.investment_duration_months}个月定投)
-                        </span>
-                      )}
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -610,11 +583,6 @@ const DCAResult: React.FC = () => {
                   <div className="bg-green-400/10 p-4 rounded border border-green-400/20">
                     <div className="text-green-400 text-sm mb-3 font-bold">
                       🔄 DCA止盈策略
-                      {metrics.benchmark_comparison.investment_duration_months && (
-                        <span className="text-green-300 text-xs ml-2 font-normal">
-                          ({metrics.benchmark_comparison.investment_duration_months}个月定投)
-                        </span>
-                      )}
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
@@ -627,16 +595,16 @@ const DCAResult: React.FC = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">累计投入:</span>
-                        <span className="text-green-400">¥{metrics.benchmark_comparison.dca_investment?.toLocaleString() || 0}</span>
+                        <span className="text-green-400">¥{metrics.total_invested?.toLocaleString() || 0}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">当前价值:</span>
-                        <span className="text-green-400">¥{metrics.benchmark_comparison.dca_current_value?.toLocaleString() || 0}</span>
+                        <span className="text-green-400">¥{result.final_value.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between border-t border-green-400/20 pt-2">
                         <span className="text-gray-400 font-bold">收益率:</span>
-                        <span className={`font-bold ${metrics.benchmark_comparison.dca_return >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          {metrics.benchmark_comparison.dca_return >= 0 ? '+' : ''}{metrics.benchmark_comparison.dca_return.toFixed(2)}%
+                        <span className={`font-bold ${result.total_return >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {result.total_return >= 0 ? '+' : ''}{result.total_return.toFixed(2)}%
                         </span>
                       </div>
                     </div>
@@ -744,15 +712,18 @@ const DCAResult: React.FC = () => {
             </div>
           )}
 
-          {/* 图表占位区 */}
+          {/* 可视化分析图表 */}
           <div className="border border-green-400/30 p-6">
             <div className="text-green-400 mb-4 text-lg">[CHARTS] 可视化分析 📈</div>
             
-            <div className="text-gray-400 text-center py-12">
-              <div className="text-4xl mb-4">🚧</div>
-              <div>图表功能开发中...</div>
-              <div className="text-sm mt-2">收益曲线图、买入点位图等可视化组件</div>
-            </div>
+            <DCACharts
+              daily_prices={metrics?.daily_prices || []}
+              daily_portfolio_values={metrics?.daily_portfolio_values || []}
+              daily_returns={metrics?.daily_returns || []}
+              daily_dates={metrics?.daily_dates || []}
+              investment_records={metrics?.investment_records || []}
+              sell_records={metrics?.sell_records || []}
+            />
           </div>
 
           {/* 操作按钮 */}

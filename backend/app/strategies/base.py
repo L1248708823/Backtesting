@@ -44,10 +44,13 @@ class BaseStrategy(bt.Strategy, metaclass=BaseStrategyMeta):
         self.start_value = None
         self.end_value = None
         
-        # 每日净值记录 (用于计算各种指标)
-        self.daily_values = []
-        self.daily_returns = []
-        self.daily_dates = []
+        # 每日价格记录 (标的价格，不是总资产)
+        self.daily_prices = []  # 标的每日收盘价
+        self.daily_returns = []  # 基于价格的日收益率
+        self.daily_dates = []   # 对应日期
+        
+        # 总资产价值记录 (用于计算投资组合指标)
+        self.daily_portfolio_values = []
         
     def start(self):
         """策略开始时调用"""
@@ -58,24 +61,53 @@ class BaseStrategy(bt.Strategy, metaclass=BaseStrategyMeta):
         """在next之前调用，用于数据收集"""
         self._collect_daily_data()
     
-    def postnext(self):
-        """在next之后调用，用于数据收集"""
-        self._collect_daily_data()
+    def next(self):
+        """策略主逻辑入口（基类实现数据收集）"""
+        # 确保每日数据收集只进行一次
+        if not self._data_collected_today():
+            self._collect_daily_data()
+        
+        # 调用子类的策略逻辑
+        self._next_impl()
+    
+    @abstractmethod 
+    def _next_impl(self):
+        """策略主逻辑（子类必须实现）"""
+        pass
+    
+    def _data_collected_today(self) -> bool:
+        """检查今天是否已经收集了数据"""
+        if not self.daily_dates:
+            return False
+        
+        current_date = self.datas[0].datetime.date(0)
+        return self.daily_dates[-1] == current_date
     
     def _collect_daily_data(self):
-        """收集每日净值数据"""
-        current_value = self.broker.getvalue()
+        """收集每日标的价格和资产价值数据"""
+        # 获取标的收盘价（用于净值图表）
+        current_price = self.datas[0].close[0] if self.datas and len(self.datas[0]) > 0 else 0
+        # 获取总资产价值（现金 + 持仓价值，用于投资组合分析）
+        current_portfolio_value = self.broker.getvalue()
         current_date = self.datas[0].datetime.date(0)
         
-        self.daily_values.append(current_value)
-        self.daily_dates.append(current_date)
-        
-        # 计算日收益率
-        if len(self.daily_values) > 1:
-            daily_return = (current_value - self.daily_values[-2]) / self.daily_values[-2]
-            self.daily_returns.append(daily_return)
+        # 避免重复添加同一天的数据
+        if self.daily_dates and self.daily_dates[-1] == current_date:
+            # 更新当天的数据（最后一个记录）
+            self.daily_prices[-1] = current_price
+            self.daily_portfolio_values[-1] = current_portfolio_value
         else:
-            self.daily_returns.append(0.0)  # 第一天收益率为0
+            # 添加新一天的数据
+            self.daily_prices.append(current_price)
+            self.daily_portfolio_values.append(current_portfolio_value)
+            self.daily_dates.append(current_date)
+            
+            # 计算基于标的价格的日收益率
+            if len(self.daily_prices) > 1:
+                daily_return = (current_price - self.daily_prices[-2]) / self.daily_prices[-2]
+                self.daily_returns.append(daily_return)
+            else:
+                self.daily_returns.append(0.0)  # 第一天收益率为0
             
     
     def stop(self):
@@ -126,10 +158,6 @@ class BaseStrategy(bt.Strategy, metaclass=BaseStrategyMeta):
             })
     
     
-    @abstractmethod 
-    def next(self):
-        """策略主逻辑（子类必须实现）"""
-        pass
     
     @classmethod
     @abstractmethod
@@ -160,9 +188,10 @@ class BaseStrategy(bt.Strategy, metaclass=BaseStrategyMeta):
             'buy_records': buy_orders,
             'sell_records': sell_orders,
             
-            # 每日数据（供波动率计算）
-            'daily_values': self.daily_values,
-            'daily_returns': self.daily_returns,
+            # 每日数据（供图表展示和波动率计算）
+            'daily_prices': self.daily_prices,              # 标的价格走势
+            'daily_portfolio_values': self.daily_portfolio_values,  # 投资组合价值
+            'daily_returns': self.daily_returns,            # 基于标的价格的收益率
             'daily_dates': [d.isoformat() for d in self.daily_dates],
             
             # 波动率计算（保留自己实现）
