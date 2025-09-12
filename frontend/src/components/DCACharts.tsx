@@ -233,7 +233,7 @@ const DCACharts: React.FC<DCAChartsProps> = ({
         subtext: '鼠标滚轮缩放 | 底部滑块调整时间范围 | 显示完整交易日数据',
         subtextStyle: {
           color: '#9ca3af',
-          fontSize: 12,
+          fontSize: 11,
           fontFamily: 'monospace'
         }
       },
@@ -266,7 +266,7 @@ const DCACharts: React.FC<DCAChartsProps> = ({
       },
       legend: {
         data: ['标的价格', '投资组合价值', '买入点', '卖出点'],
-        top: '30px',
+        top: '55px',
         textStyle: {
           color: ninjaColors.text,
           fontFamily: 'monospace'
@@ -275,7 +275,7 @@ const DCACharts: React.FC<DCAChartsProps> = ({
       grid: {
         left: '60px',
         right: '80px',
-        top: '80px',
+        top: '90px', // 给标题和图例留出更多空间
         bottom: '100px', // 增加底部空间给dataZoom
         borderColor: ninjaColors.grid
       },
