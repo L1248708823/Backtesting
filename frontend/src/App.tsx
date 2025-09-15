@@ -23,7 +23,7 @@ function ModernNavbar() {
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2 text-green-400 font-mono font-bold">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="tracking-wider">Ninja韭菜道场@v2.0</span>
+          <span className="tracking-wider">韭菜道场@v1.0</span>
         </div>
         
         <div className="flex items-center gap-1">

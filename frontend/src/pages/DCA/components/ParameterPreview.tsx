@@ -97,7 +97,7 @@ const ParameterPreview: React.FC<ParameterPreviewProps> = ({ parameters }) => {
 
       {/* 风险提示 */}
       <div className="mt-4 pt-3 border-t border-red-400/20 text-xs text-gray-500">
-        ⚠️ 忍者提醒: 以上为预期计算，实际结果受市场波动、节假日等因素影响
+        ⚠️ 警告: 以上为预期计算，实际结果受市场波动、节假日等因素影响
       </div>
     </div>
   )

@@ -749,7 +749,7 @@ const DCAResult: React.FC = () => {
             </div>
 
             <div className="mt-4 text-gray-500 text-sm">
-              <div>🥷 忍者心得: {result.total_return >= 0 ? '定投策略显示正收益，保持投资纪律是关键' : '短期回撤是正常现象，长期定投见真章'}</div>
+              <div>🥷 可以公开的情报: {result.total_return >= 0 ? '定投策略显示正收益，保持投资纪律是关键' : '短期回撤是正常现象，长期定投见真章'}</div>
             </div>
           </div>
 

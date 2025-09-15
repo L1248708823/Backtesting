@@ -157,7 +157,7 @@ const StrategySelection: React.FC = () => {
           {/* 左侧 - 系统信息 */}
           <div className="lg:col-span-1 space-y-6">
             <div className="border border-green-400/30 p-4">
-              <div className="text-green-400 mb-3">[NINJA_INTEL] 忍者情报网 🕵️</div>
+              <div className="text-green-400 mb-3">[NINJA_INTEL] 可以公开的情报 🕵️</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">⚡ 执行状态:</span>
