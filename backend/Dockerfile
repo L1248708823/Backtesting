@@ -1,5 +1,5 @@
 # 量化回测系统后端 Dockerfile - 简化版本
-FROM python:3.13-slim
+FROM python:3.12-slim
 
 LABEL maintainer="Quant Ninja <ninja@example.com>"
 LABEL description="量化回测系统后端服务"
