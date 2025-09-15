@@ -18,7 +18,7 @@ RUN apk add --no-cache curl
 COPY package.json pnpm-lock.yaml ./
 
 # 安装依赖 (使用pnpm)
-RUN npm install -g pnpm && \
+RUN npm install -g pnpm@8.15.5 && \
     pnpm install --frozen-lockfile
 
 # 复制源代码
