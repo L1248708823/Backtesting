@@ -13,8 +13,8 @@ if ! docker ps > /dev/null 2>&1; then
     exit 1
 fi
 
-echo "📥 拉取最新代码..."
-git pull origin main
+# echo "📥 拉取最新代码..."
+# git pull origin main
 
 echo "🛑 停止现有容器..."
 docker-compose down || true
