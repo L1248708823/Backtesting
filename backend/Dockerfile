@@ -1,8 +1,17 @@
-# 量化回测系统后端 Dockerfile - 基于基础镜像
-FROM quant-base
+# 量化回测系统后端 Dockerfile - 简化版本
+FROM python:3.13-slim
 
 LABEL maintainer="Quant Ninja <ninja@example.com>"
 LABEL description="量化回测系统后端服务"
+
+# 配置国内APT源加速
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
+    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    curl gcc g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录
 WORKDIR /app
@@ -15,8 +24,9 @@ ENV PIP_NO_CACHE_DIR=1
 # 复制依赖文件
 COPY requirements.txt .
 
-# 安装Python依赖 (pip已在基础镜像中配置国内源)
-RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 配置pip国内源并安装Python依赖
+RUN pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 复制应用代码
 COPY . .
