@@ -8,8 +8,7 @@ LABEL description="量化回测系统前端服务"
 WORKDIR /app
 
 # 设置环境变量
-ENV NODE_ENV=development
-ENV VITE_API_BASE_URL=http://localhost:8000/api/v1
+ENV NODE_ENV=production
 
 # 安装系统依赖
 RUN apk add --no-cache curl
