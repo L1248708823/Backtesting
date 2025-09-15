@@ -8,7 +8,7 @@ LABEL description="量化回测系统前端服务"
 WORKDIR /app
 
 # 设置环境变量
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 
 # 安装系统依赖
 RUN apk add --no-cache curl
@@ -18,7 +18,7 @@ COPY package.json pnpm-lock.yaml ./
 
 # 安装依赖 (使用pnpm)
 RUN npm install -g pnpm@8.15.5 && \
-    pnpm install --frozen-lockfile
+    pnpm install
 
 # 复制源代码
 COPY . .
