@@ -1,0 +1,18 @@
+# 基础镜像 - 包含常用依赖，很少变更
+FROM python:3.13-slim
+
+LABEL name="quant-base"
+LABEL maintainer="Quant Ninja <ninja@example.com>"
+LABEL description="量化回测系统基础镜像"
+
+# 配置国内APT源加速
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
+    sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    curl gcc g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# 配置pip国内源
+RUN pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple

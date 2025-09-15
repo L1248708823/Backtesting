@@ -1,5 +1,5 @@
-# 量化回测系统后端 Dockerfile
-FROM python:3.13-slim
+# 量化回测系统后端 Dockerfile - 基于基础镜像
+FROM quant-base
 
 LABEL maintainer="Quant Ninja <ninja@example.com>"
 LABEL description="量化回测系统后端服务"
@@ -12,19 +12,11 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1
 
-# 安装系统依赖
-RUN apt-get update && apt-get install -y \
-    curl \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
-
 # 复制依赖文件
 COPY requirements.txt .
 
-# 安装Python依赖
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# 安装Python依赖 (pip已在基础镜像中配置国内源)
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 复制应用代码
 COPY . .

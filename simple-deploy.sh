@@ -19,8 +19,10 @@ git pull origin main
 echo "🛑 停止现有容器..."
 docker-compose down || true
 
-echo "🏗️ 重新构建和启动容器..."
-docker-compose up -d --build
+echo "🏗️ 启动容器 (利用缓存)..."
+docker-compose up -d
+
+echo "💡 如需强制重建，请使用: docker-compose up -d --build"
 
 echo "⏳ 等待服务启动..."
 sleep 15
