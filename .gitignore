@@ -110,7 +110,7 @@ ipython_config.py
 .pdm.toml
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
+__ps__/
 
 # Celery stuff
 celerybeat-schedule
@@ -283,6 +283,9 @@ data/
 *.json
 *.pkl
 *.pickle
+
+!package.json
+!tsconfig.json
 
 # Docker
 .dockerignore
