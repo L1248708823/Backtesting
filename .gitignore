@@ -280,12 +280,11 @@ Thumbs.db
 # Data files
 data/
 *.csv
-*.json
 *.pkl
 *.pickle
 
-!package.json
-!tsconfig.json
+
+
 
 # Docker
 .dockerignore
