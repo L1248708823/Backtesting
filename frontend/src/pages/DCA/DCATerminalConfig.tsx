@@ -278,8 +278,8 @@ const DCATerminalConfig: React.FC = () => {
                     step={1000}
                   />
                   {/* 快速资金选择 */}
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-gray-500 text-xs mt-2">快选:</span>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="text-gray-500 text-xs ">快选:</span>
                     {[
                       { label: '5万', value: 50000 },
                       { label: '10万', value: 100000 },

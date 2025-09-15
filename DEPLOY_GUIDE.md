@@ -77,6 +77,15 @@ docker-compose logs -f
 
 ---
 
+# 服务器上生成的密钥
+ssh-keygen -t ed25519 -C "fuwuqi"
+
+### 秘钥
+cat ~/.ssh/deploy_key
+
+### 查看
+ssh-keygen -y -f ~/.ssh/deploy_key
+
 ## Step 2: 本地SSH密钥配置
 
 ### 2.1 生成SSH密钥对
